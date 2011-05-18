@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	
+	<title>exposeJQuery example</title>
+	
+	<link rel="stylesheet" type="text/css" href="examples.css"/>
+	<script type="text/javascript" src="http://api.giscloud.com/api.js"></script>
+	
+	<script type="text/javascript">
+		
+		giscloud.ready(function() {
+			
+			// expose a jquery instance
+			var exposedJQ = giscloud.exposeJQuery();
+			
+			// use jQuery as you normally would
+			exposedJQ("div").css({
+				"border": "solid thin red",
+				"padding": "1em",
+				"cursor": "pointer"
+			}).click(function() {
+				exposedJQ(this).hide("slow");
+				exposedJQ("pre").show("slow");
+			});
+		});
+		
+	</script>
+	
+	<body>
+		<h1>giscloud.exposeJQuery() example</h1>
+		<p>
+			This is an example of the giscloud.exposeJQuery() method. 
+		</p>
+		<p>
+			This method exposes jQuery internally used by the GIS Cloud JavaScript API.
+		</p>
+		
+		<div>Click me!</div>
+		
+		<pre style="display: none">			
+// expose a jquery instance
+var exposedJQ = giscloud.exposeJQuery();
+
+// use jQuery as you normally would
+exposedJQ("div").css({
+    "border": "solid thin red",
+    "padding": "1em",
+    "cursor": "pointer"
+}).click(function() {
+    exposedJQ(this).hide("slow");
+    exposedJQ("pre").show("slow");
+});
+        </pre>
+		
+	</body>
+</html>

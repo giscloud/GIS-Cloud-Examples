@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+    
+    <title>flag markers example</title>
+    
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="http://api.giscloud.com/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+    
+    <script type="text/javascript">
+        var viewer, marker, $ = giscloud.exposeJQuery();
+        
+        giscloud.ready(function() {
+            
+            viewer = new giscloud.Viewer("mapViewer", mapId)
+                .center(new giscloud.LonLat(233000, 6820000));
+            viewer.loading.done(function() {
+                    $("#example").show();
+                });
+        });
+        
+        function placeMarker() {
+            // create marker
+            marker = new giscloud.FlagMarker(
+                new giscloud.LonLat(-920, 6709974),
+                "London",
+                "London, UK<br/>Check out the <a target='_blank' href='http://en.wikipedia.org/wiki/London'>" + 
+                "Wikipedia article</a> on London.",
+                new giscloud.Color(255, 150, 0)                
+            );
+            
+            // add marker to viewer
+            viewer.addMarker(marker);
+        }
+        
+        function changeMarkerColor() {
+            marker.color(new giscloud.Color(0, 40, 200));
+        }
+        
+        function toggleMarker() {
+            marker.visible(
+                !marker.visible()
+            );
+        }
+        
+        function moveMarker() {
+            marker.position(new giscloud.LonLat(-8226405, 4966405));
+        }
+        
+        function changeMarkerTitleAndContent() {
+            marker.title("New York");
+            marker.content(
+                "New York, USA<br/>New York <a target='_blank' href='http://en.wikipedia.org/wiki/New_York_City'>" + 
+                "Wikipedia article</a>."
+            );
+        }
+        
+        function removeMarker() {
+            viewer.removeMarker(marker);
+        }
+        
+        function ex(nr) {
+            switch (nr) {
+            case 1:
+                placeMarker();
+                $("#ex1").hide("slow");
+                $("#ex2").show("slow");
+                break;
+            case 2:
+                changeMarkerColor();
+                $("#ex2").hide("slow");
+                $("#ex3").show("slow");
+                break;
+            case 3:
+			    marker.visible(true);
+                $("#ex3").hide("slow");
+                $("#ex4").show("slow");
+                break;            
+            case 4:
+                viewer.center(new giscloud.LonLat(-7800000, 4900000));
+                moveMarker();
+                $("#ex4").hide("slow");
+                $("#ex5").show("slow");
+                break;            
+            case 5:
+                changeMarkerTitleAndContent();
+                $("#ex5").hide("slow");
+                $("#ex6").show("slow");
+                break;    
+            case 6: 
+                removeMarker();
+                viewer.center(new giscloud.LonLat(233000, 6820000));                
+                $("#ex6").hide("slow");
+                $("#ex1").show("slow");
+                break;
+            }            
+        }
+        
+        
+    </script>
+    
+    <style type="text/css">
+        body {
+            width: 745px;
+        }
+        
+        #mapViewer {
+            width: 420px;
+            height: 400px;
+            float: left;
+        }
+        
+        #example {
+            width: 320px;
+            height: 400px;
+            float: left;
+            background: #fafafa;
+            border: solid thin #ccc;
+            border-right: none;
+        }
+        
+		#example div {
+            margin: 0.5em;
+        }
+        
+		#example pre {
+            padding: 0.5em
+        }
+        
+		#code {
+			float: left;
+			width: 100%;
+		}
+    </style>
+    
+    <body>
+        <h1>Flag Markers</h1>
+        <p>
+            This example demonstrates use of viewer flag markers. <br/>
+            Follow the six steps and learn how to use the FlagMarker object and its methods.
+        </p>
+        
+        <div id ="index"></div>
+        <div id="example" style="display: none;">
+            <div id="ex1">
+                <h3>Step 1</h3>
+                <a href="#" onclick="ex(1); return false;">Click</a> to place flag marker over London.
+                <pre>
+// create marker
+marker = new giscloud.FlagMarker(
+    new giscloud.LonLat(1000000, 6200000),
+    "London",
+    "London, UK... ,
+    new giscloud.Color(255, 150, 0)             
+);                
+
+// add marker to viewer
+viewer.addMarker(marker);</pre>
+            </div>
+            <div id="ex2" style="display: none;">               
+                <h3>Step 2</h3>
+                <p>
+                    Marker is in place. Click on it to reveal its content. <br/>
+                    <a href="#" onclick="ex(2); return false;">Click here</a> to change the color of the marker.
+                </p>
+                <pre>
+// change color
+marker.color(
+    new giscloud.Color(0, 40, 200)
+);  
+                </pre>
+                <p>
+                    You can retrieve the color of the flag marker by invoking the <i>marker.color()</i> method
+                    without passing any arguments.
+                </p>
+            </div>
+            <div id="ex3" style="display: none;">               
+                <h3>Step 3</h3>
+                <p>
+                    Try toggling the marker using the <i>marker.visible()</i> method.
+                </p>
+                <p>
+                    This method accepts true or false and sets marker's visibility accordingly. If invoked without 
+                    arguments, it will return the current visibility of the marker. 
+                </p>
+                <a href="#" onclick="toggleMarker(); return false;">Toggle</a>
+                <p>
+                    You can proceed to the <a href="#" onclick="ex(3); return false;">next step</a>.
+                </p>
+                <pre>
+// toggle marker visibility
+marker.visible(
+    !marker.visible()
+);  </pre>
+            </div>
+            <div id="ex4" style="display: none;">               
+                <h3>Step 4</h3>
+                <p>
+                    Let's move the marker to New York now.
+                </p>
+                <a href="#" onclick="ex(4); return false;">Click!</a>
+                <pre>
+// change marker position
+marker.position(
+    new giscloud.LonLat(-8226405, 4966405)
+);  </pre>
+                <p>
+                    The <i>marker.position()</i> method is also a getter/setter. You can use it to find out marker's 
+                    current position by invoking it without arguments.
+                </p>
+            </div>
+            <div id="ex5" style="display: none;">               
+                <h3>Step 5</h3>
+                <p>
+                    The marker still says London. That's not right.
+                </p>
+                <p>
+                    Click <a href="#" onclick="ex(5); return false;">here</a> to change marker title and content.
+				</p>
+                <pre>
+// change marker title
+marker.title("New York");
+
+// change marker content
+marker.content(
+    "New York, USA&lt;br/>New York " + 
+    "&lt;a target='_blank' href='http://" + 
+    "en.wikipedia.org/wiki/New_York_City'>" + 
+    "Wikipedia article&lt;/a>."
+);  </pre>
+                <p>
+                	Notice how the content can be HTML.
+                </p>
+				<p>
+                    The <i>marker.title()</i> and <i>marker.content()</i> methods return marker's title and 
+                    content respectively when invoked without arguments.
+                </p>
+            </div>
+            <div id="ex6" style="display: none;">               
+                <h3>Step 6</h3>
+                <p>
+                    The title and the contents have been set. <br/>
+					You can review all relevant code used in these steps in the box below.
+                </p>
+                <p>
+                    Click <a href="#" onclick="ex(6); return false;">here</a> to remove the marker and return to step one 
+					of the example.
+                </p>
+                <pre>
+// remove the marker
+viewer.removeMarker(marker);  </pre>                
+            </div>
+			
+        </div>
+        
+        <div id="mapViewer"></div>
+        
+		<br/>
+		<div id="code">
+	        <p>
+	            All of the code used in the 6 steps:           
+	        </p>
+	        <pre>
+// create marker
+marker = new giscloud.FlagMarker(
+    new giscloud.LonLat(2300000, 6200000),
+    "London",
+    "London, UK... ,
+    new giscloud.Color(255, 150, 0)             
+);                
+
+// add marker to viewer
+viewer.addMarker(marker);
+
+// change color
+marker.color(
+    new giscloud.Color(0, 40, 200)
+);  
+
+// toggle marker visibility
+marker.visible(
+    !marker.visible()
+);
+
+// change marker position
+marker.position(
+    new giscloud.LonLat(-8226405, 4966405)
+);
+
+// change marker title
+marker.title("New York");
+
+// change marker content
+marker.content(
+    "New York, USA&lt;br/>New York &lt;a target='_blank' " + 
+	"href='http://en.wikipedia.org/wiki/New_York_City'>Wikipedia article&lt;/a>."
+);
+
+// remove the marker
+viewer.removeMarker(marker);
+
+            </pre>
+		</div>
+    </body>
+</html>

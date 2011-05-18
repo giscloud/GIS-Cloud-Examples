@@ -1,0 +1,35 @@
+body { width: 600px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 0.8em }
+
+h1 { font-size: 1.2em }
+
+pre {
+    background-color: #EEEEEE;
+    border: thin solid #CCCCCC;
+    font-size: 1.2em;
+    padding: 2em;
+    overflow-x: auto;
+}
+
+#mapViewer {
+	width: 598px;
+	height: 370px;
+	border: thin solid #CCCCCC;
+}
+
+#toolbar {
+	background-color: #f0f0f0;
+	border: thin solid #CCCCCC;
+}
+
+#list {
+	background-color: #fafafa;
+    border: thin solid #CCCCCC;
+	padding-left: 1em; padding-bottom: 1em;
+	margin-bottom: 5em;
+    height: 300px;
+    overflow: auto;
+}
+
+#list li {
+    margin: 1em;
+}

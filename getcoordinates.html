@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    
+    <title>Get coordinates tool</title>
+    
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="http://api.giscloud.com/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+    
+    <script type="text/javascript">
+        var viewer, tool, $ = giscloud.exposeJQuery();
+        giscloud.ready(function () {
+            
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId);
+            
+            // create the tool
+            tool = new giscloud.ui.Toolbar.Tool("pointTool", {
+                    instant: true,
+                    styles: {                    
+                        caption: "Get coordinates",
+                        showCaption: true,
+                        cssClass: "mytool",
+                        active: "mytool-active",
+                        hover: "mytool-hover"                    
+                    },
+                    actions: {                    
+                        activation: function (viewer) {
+                            // clear previously added graphic features
+                            viewer.graphic.clear();
+                            
+                            // start drawing
+                            viewer.graphic.draw("point",
+                                function (point) {
+                                    
+                                    // when done, show coordinates
+                                    showCoordinates(point.geometry);
+                                    
+                                }
+                            );
+                            
+                        }                 
+                    }
+                }
+            );
+            
+            // create the toolbar and add the tool
+            new giscloud.ui.Toolbar({
+                    viewer: viewer,
+                    container: "toolbar"
+            }).add(tool);
+            
+        });
+        
+        function showCoordinates(geom) {
+            $("#coords").html(geom.x + ", " + geom.y);
+        }
+        
+    </script>
+    
+    <style type="text/css">
+        
+        #coords {
+            border: thin solid #ccc;
+            height: 1em;
+            padding: 0.3em;
+            width: 240px;
+            margin-top: 0.5em;
+        }
+        
+        .mytool {
+            margin: 0.1em 0.2em;
+            padding: 0em 0.8em;
+            background-color: #ccc;
+            color: #444;
+            cursor: pointer;
+        }
+        
+        .mytool-active {
+            background-color: #999;
+            color: #eee;
+        }
+        
+        .mytool-hover {
+            text-decoration: underline;
+            
+        }
+        
+        
+    </style>
+    
+    <body>
+        <h1>Get coordinates tool</h1>
+        <p>
+            In this example, we create an instant tool which will draw a point feature on a desired location 
+            and display the location's coordinates. 
+        </p>
+                
+        <div id ="toolbar"></div>
+        <div id="mapViewer"></div>
+        <div id="coords"></div>
+        
+        <p>
+            The code:           
+        </p>
+<pre>// create the tool
+tool = new giscloud.ui.Toolbar.Tool("pointTool", {
+
+        // instant tools don' stay activated
+        instant: true,
+        
+        styles: {                    
+            caption: "Get coordinates",
+            showCaption: true,
+            cssClass: "mytool",
+            active: "mytool-active",
+            hover: "mytool-hover"                    
+        },
+        
+        actions: {
+          
+            // since this is a instant tool, only the activation action is needed
+            activation: function (viewer) {
+            
+                // clear previously added graphic features
+                viewer.graphic.clear();
+                
+                // start drawing
+                viewer.graphic.draw("point",
+                    function (point) {
+                        
+                        // when done, show coordinates
+                        showCoordinates(point.geometry);
+                        
+                    }
+                );
+                
+            }                 
+        }
+    }
+);</pre>
+        
+    </body>
+</html>

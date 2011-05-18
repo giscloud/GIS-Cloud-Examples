@@ -1,0 +1,117 @@
+table { font: inherit }
+
+#example { 
+    background-color: #fafafa;
+	border: solid thin #ccc;
+    height: 330px;
+    position: relative;
+    top: 40px;
+    width: 620px;
+}
+
+#ft {
+    margin-top: 4.2em;
+    position: relative;
+    color: #999;
+}
+
+#col1, #col2 {
+	padding-bottom: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+	margin: 1em;
+	background-color: #fff;
+	border: solid thin #ccc;
+	width: 255px;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+#col2 {
+    left: 300px;
+}
+
+input, select {
+    border: solid thin #ccc;
+}
+
+input:hover, select:hover {
+    border: solid thin #888;
+}
+
+#col1 input, #col2 input {
+    width: 2em;
+	margin-right: 1.2em;
+}
+
+#colInput1, #colInput2 {
+    width: 5em;
+    position: absolute;
+    right: 1em;
+	top: 0.5em;
+	border: none;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.err {
+	border: solid thin red;
+}
+
+#col1 th, #col2 th {
+    height: 2em;
+	text-align: left;
+	padding: 0.5em;
+	font-weight: bold;
+}
+
+#controls {
+	position: absolute;
+    top: 160px;
+    left: 30px;
+	width: 300px;
+}
+
+#nrOfSwatches {
+	width: 2em
+}
+
+#colorbar {
+	position: absolute;
+    background-color: #fff;
+	width: 550px;
+	height: 60px;
+	top: 210px;
+	left: 20px;
+    border: solid thin #ccc;
+	padding: 1em;
+}
+
+#colorbar div {
+	float: left;
+	height: 100%;
+	border-style: none;
+    margin: 0px;
+}
+
+#colorpicker1, #colorpicker2 {
+    background-color: #fff;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.25;
+	opacity: 0.75;
+    border: thin solid #ccc;
+    left: 150px;
+    padding: 1em;
+    position: absolute;
+    top: 50px;
+    z-index: 100;
+}
+
+#colorpicker2 {
+	left: 430px;
+}
+
+.hide {
+    display: none;
+}

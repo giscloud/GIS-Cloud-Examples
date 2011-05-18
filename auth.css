@@ -1,0 +1,27 @@
+.gc-auth-button {
+    width: 150px;
+    height: 22px;
+    background-image: url("images/signin-bt.jpg");
+    background-repeat: no-repeat; 
+    background-position: top;
+    color: #666;
+    font-family: Tahoma;
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+}
+
+div.gc-auth-button:hover {
+    background-position: bottom;
+}
+
+.gc-authorized {
+    background-image: none;
+}
+        
+.gc-redirect-uri-mismatch {
+    background-image: none;
+    cursor: default;
+}      
+
+ 

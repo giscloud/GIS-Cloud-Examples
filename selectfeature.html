@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    
+    <title>feature info example</title>
+    
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="http://api.giscloud.com/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+    
+    <script type="text/javascript">
+        var viewer, $ = giscloud.exposeJQuery();
+        giscloud.ready(function () {
+            
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId);
+            
+			// create a toolbar
+			new giscloud.ui.Toolbar({
+				viewer: viewer,
+				container: "toolbar",
+				defaultTools: ["pan", "select"]
+			});
+			
+			// bind a handler for the selectionChange event
+			viewer.selectionChange(function (evt) {
+				if (evt.action === "add") {					
+					// get feature data
+					giscloud.features.byId(evt.feature.layerId, evt.feature.featureId)
+					   .done(displayFeatureData);
+				}
+			});
+        });
+		
+		function displayFeatureData(feature) {
+			var d, v, p, t;
+			d = feature.data;
+			if (d) {				
+			    t = $("#data tbody");
+				t.html("");
+				for (p in d) {
+					v = d[p];
+					if (v.length > 30) {
+						v = v.substr(0, 30) + "...";
+					}
+				    $("<tr/>").append(
+					   "<td>" + p + "</td>",
+					   "<td>" + v + "</td>"
+					).appendTo(t);
+				}
+			}
+		}
+		
+		
+    </script>
+    
+    <style type="text/css">
+        
+        #data { 
+            font-size: inherit;
+			border: solid thin #ccc;
+			background-color: #fafafa;
+			margin-top: 1em;
+		}
+		
+		#data td {
+			padding: 0.3em;
+            border: solid thin #ccc;
+		}
+        
+        
+    </style>
+    
+    <body>
+        <h1>Feature info on selection</h1>
+        <p>
+            The most common thing somebody expects when clicking on a feature on a map is to find out stuff about it.
+			Here's a short example of how you can get that with the GIS Cloud JS API. 
+        </p>
+        <p>
+            We'll use the default <i>select</i> tool combined with the viewer's <i>selectionChange</i> event to get 
+			the feature id. Then, through the <i>giscloud.features</i> object, we'll get the data and display it in
+			a table.
+        </p>
+        <p>
+            Pick the select tool from the toolbar above the map and click on a feature to display feature data.
+        </p>
+        
+        <div id ="toolbar"></div>
+        <div id="mapViewer"></div>
+        <table id="data">
+        	<thead>
+        		<tr>
+        			<th>Property</th>
+					<th>Value</th>
+        		</tr>
+        	</thead>
+			<tbody>
+				<tr>
+					<td></td><td></td>
+				</tr>
+			</tbody>
+        </table>
+        <p>
+            The code:           
+        </p>
+<pre>
+// bind a handler for the selectionChange event
+viewer.selectionChange(function (evt) {
+    if (evt.action === "add") {                 
+        // get feature data
+        giscloud.features.byId(evt.feature.layerId, evt.feature.featureId)
+           .done(displayFeatureData);
+    }
+});	
+</pre>
+        
+    </body>
+</html>
