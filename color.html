@@ -246,12 +246,13 @@
             cbar.html("");
             
             // generate swatches
+	    w = (100 / nr) + "%";
             for (i = 0; i < nr; i++) {
                 hex = r[i].hex();
                 d = $("<div/>", {
                     id: "swatch" + hex.replace(/#/, "_"),
                     title: hex,
-                    width: (i === nr - 1) ? cbar.width() - (i * w) - 1 : w, // not very clever, I know
+		    width: w,
                     css: { "background-color": hex, "border-color": r[i].darker().hex()}
                 });
                 d.append("&nbsp;");
