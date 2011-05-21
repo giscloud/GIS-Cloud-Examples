@@ -12,7 +12,7 @@
         giscloud.ready(function () {
             
             // create a viewer
-            viewer = new giscloud.Viewer("mapViewer", mapId);
+            viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
             
 			// create a toolbar
 			new giscloud.ui.Toolbar({

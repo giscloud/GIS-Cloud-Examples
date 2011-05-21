@@ -12,7 +12,7 @@
         giscloud.ready(function () {
             
             // create a viewer
-            var viewer = new giscloud.Viewer("mapViewer", mapId);
+            var viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
             
             // create the first tool which shows coordinates in a <div>
             tool1 = new giscloud.ui.Toolbar.Tool(            

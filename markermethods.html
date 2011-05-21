@@ -12,7 +12,7 @@
         
         giscloud.ready(function() {
             
-            viewer = new giscloud.Viewer("mapViewer", mapId)
+            viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true })
                 .center(new giscloud.LonLat(233000, 6820000));
             viewer.loading.done(function() {
                     $("#example").show();
