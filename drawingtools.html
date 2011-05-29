@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<try.!DOCTYPE html>
 <html>
     
     <title>Drawing tools</title>
@@ -38,7 +38,7 @@
                                     function (feat) {
                                         
                                         // output wkt
-                                        outputOgcWkt(feat.geometry.toOGC());
+                                        outputOgcWkt(feat.geometry().toOGC());
                                         
                                     }
                                 );
@@ -66,7 +66,7 @@
                                     function (feat) {
                                         
                                         // output wkt
-                                        outputOgcWkt(feat.geometry.toOGC());
+                                        outputOgcWkt(feat.geometry().toOGC());
                                         
                                     }
                                 );
@@ -94,7 +94,7 @@
                                     function (feat) {
                                         
                                         // output wkt
-                                        outputOgcWkt(feat.geometry.toOGC());
+                                        outputOgcWkt(feat.geometry().toOGC());
                                         
                                     }
                                 );
@@ -205,7 +205,7 @@ new giscloud.ui.Toolbar.Tool("pointTool", {
                     function (feat) {
                         
                         // output wkt
-                        outputOgcWkt(feat.geometry.toOGC());
+                        outputOgcWkt(feat.geometry().toOGC());
                         
                     }
                 );

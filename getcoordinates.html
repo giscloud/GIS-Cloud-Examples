@@ -32,10 +32,10 @@
                             // start drawing
                             viewer.graphic.draw("point",
                                 function (point) {
-                                    
+
                                     // when done, show coordinates
-                                    showCoordinates(point.geometry);
-                                    
+                                    showCoordinates(point.geometry());
+
                                 }
                             );
                             
@@ -130,7 +130,7 @@ tool = new giscloud.ui.Toolbar.Tool("pointTool", {
                     function (point) {
                         
                         // when done, show coordinates
-                        showCoordinates(point.geometry);
+                        showCoordinates(point.geometry());
                         
                     }
                 );
