@@ -12,7 +12,6 @@
         var viewer, marker, $ = giscloud.exposeJQuery();
         
         mapId = 17460;
-        pointLayerId = 84277;
         lineLayerId = 84278;
         polygonLayerId = 84279;
         apiKey = "f2192a65997d22be6f1ca5449f7ff60c";
@@ -39,7 +38,6 @@
         }
         
         function featureLayer() {
-            if (geomType === 'point') return pointLayerId;
             if (geomType === 'line') return lineLayerId;
             if (geomType === 'polygon') return polygonLayerId;
         }
@@ -171,7 +169,6 @@
             </div>
 			<div id="ex2" class="ex" style="display: none">
                 Choose your weapon:
-                <!--<a class="radio" href="#" onclick="return ex(2, 'point');">Point</a>-->
                 <a class="radio" href="#" onclick="return ex(2, 'line');">Line</a>
                 <a class="radio" href="#" onclick="return ex(2, 'polygon');">Polygon</a>
 			</div>
