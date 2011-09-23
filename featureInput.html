@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    
+    <title>Feature input</title>
+    
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript">window.gcForceFlashViewer = true;</script>
+    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+    
+    <script type="text/javascript">
+        var viewer, $ = giscloud.exposeJQuery();
+        
+        mapId = 17460;
+        pointLayerId = 84277;
+        lineLayerId = 84278;
+        polygonLayerId = 84279;
+        apiKey = "f2192a65997d22be6f1ca5449f7ff60c";
+        
+        giscloud.ready(function () {
+            
+            // set api key
+            giscloud.apiKey(apiKey);
+            
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+            
+            // bind a handler for the selectionChange event
+			viewer.selectionChange(onSelectionChanged);
+            
+            // enable feature selection
+            viewer.select(true);
+        });
+        
+        function setGeomType(type) {
+            geomType = type;
+        }
+        
+        function featureLayer() {
+            if (geomType === 'point') return pointLayerId;
+            if (geomType === 'line') return lineLayerId;
+            if (geomType === 'polygon') return polygonLayerId;
+        }
+        
+        function featureData() {
+            return {
+                data: {
+                    title: $("#title").val() || geomType,
+                    name: $("#name").val(),
+                    message: $("#message").val()
+                },
+                __layerId: featureLayer()
+            };
+        }
+        
+        function clearFeatureData() {
+            $("#ex3 input").val("");
+        }
+        
+        function onUpdate() {
+            giscloud.layers.reset(mapId, [featureLayer()]);
+            ex(5);
+        }
+        
+        function onDrawEnd(graphic) {
+            var data = featureData(),
+                feature = new giscloud.Feature(data);
+            
+            feature.geometry = graphic.geometry().toOGC();            
+            ex(4);            
+            feature.update().done(onUpdate);            
+        }
+        
+        function startDrawing() {
+            viewer.graphic.draw(geomType, onDrawEnd);
+        }
+                
+        function ex(nr, param) {
+            switch (nr) {
+            case 1:
+                $("#ex1").hide("slow");
+                $("#ex2").show("slow");
+                break;
+            case 2:
+                setGeomType(param);
+                $("#ex2").hide("slow");
+                $("#ex3").show("slow");
+                break;
+            case 3:
+			    startDrawing();
+                $("#ex3").hide("slow");
+                $("#ex4").show("slow");
+                break;            
+            case 4:
+                clearFeatureData();
+                $("#ex4").hide("slow");
+                $("#ex5").show("slow");
+                break;
+            case 5:                
+                $("#ex5").hide("slow");
+                $("#ex6").show("slow");
+                break;    
+            case 6: 
+                $("#ex6").hide("slow");
+                $("#ex1").show("slow");
+                break;
+            }
+            return false;
+        }
+        
+        function displayFeatureData(feature) {
+            console.log(feature.data);
+        }
+        
+        function onSelectionChanged(evt) {
+            if (evt.action === "add") {					
+                // get feature data
+                giscloud.features.byId(evt.feature.layerId, evt.feature.featureId)
+                   .done(displayFeatureData);
+            }
+        }
+        
+    </script>
+    
+    <style type="text/css">
+        
+    </style>
+    
+    <body>
+        <h1>Features!</h1>
+        <p>
+            Try adding some features into the Cloud!
+        </p>
+		<p>
+			<div id="ex1">
+                <a href="#" onclick="return ex(1);">Begin</a>
+            </div>
+			<div id="ex2" style="display: none">
+                Choose your weapon:
+                <a class="radio" href="#" onclick="return ex(2, 'point');">Point</a>
+                <a class="radio" href="#" onclick="return ex(2, 'line');">Line</a>
+                <a class="radio" href="#" onclick="return ex(2, 'polygon');">Polygon</a>
+			</div>
+			<div id="ex3" style="display: none">
+                Set value for these attributes if you want. 
+                Title: <input id="title"></input>
+                Name: <input id="name"></input>
+                Message: <input id="message"></input>
+                <a href="#" onclick="return ex(3);">Go!</a>
+			</div>
+			<div id="ex4" style="display: none">
+                Place your feature on the map. If you're drawing a line or a polygon, doubleclick or choose <i>end draw</i> from the context menu to finish drawing.
+			</div>
+			<div id="ex5" style="display: none">
+                Saving feature...
+			</div>
+			<div id="ex6" style="display: none">
+                Done!
+                <a href="#" onclick="return ex(6);">Try this again</a>
+			</div>
+		</p>
+		
+        <div id="mapViewer"></div>
+        
+    </body>
+</html>
