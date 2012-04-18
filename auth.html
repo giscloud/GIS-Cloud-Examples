@@ -24,30 +24,34 @@
             }
         }
         
-        function getMapsData() {
+        function onMapsLoadingDone(maps) {
             
+            var l = $("#list");
+            l.html("");
+                
+            if (maps && maps.length) {
+                $.each(maps, function (i, map) {
+                    l.append("<li>" + map.name + " (id: " + map.id + ")</li>");
+                });
+            } else {
+                l.html("No private map data retrieved.");
+            }
+            
+        }
+        
+        function onMapsLoadingFailed() {
+            $("#list").html("Failed to retrieve private maps.");
+        }
+        
+        function getMapsData() {
+                        
             $("#list").html("Loading...");
             
             // get maps - if there's a token available it will be used to 
             // access private data
-            giscloud.maps.list(function(mapdata) {
-                var i, k, l, map, found = false;
-                
-                l = $("#list");
-                l.html("");
-                                
-                // mapdata contains an array of giscloud.Map objects
-                for (i = 0, k = mapdata.length; i < k; i++) {                    
-                    map = mapdata[i];
-                    if (map.share === "f") {
-                        l.append("<li>" + map.name + " (id: " + map.id + ")</li>");
-                        found = true;
-                    }
-                }
-                if (!found) {
-                    l.html("No private map data retrieved.");
-                }
-            });
+            giscloud.maps.list({ type: "private" })
+            .done(onMapsLoadingDone)
+            .fail(onMapsLoadingFailed);
         }
         
         // once the page is ready
@@ -116,7 +120,9 @@ var token = giscloud.oauth2.token();
 
 // get maps - if there's a token available it will be used to 
 // access private data
-giscloud.maps.list(function(mapdata) { ...
+giscloud.maps.list({ type: "private" })
+.done(onMapsLoadingDone)
+.fail(onMapsLoadingFailed);
 </pre>        
     </body>
 </html>
