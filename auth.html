@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
-    
+
     <title>authorization</title>
-    
+
     <link rel="stylesheet" type="text/css" href="examples.css"/>
-    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>    
+    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-    
+
     <script type="text/javascript">
         // expose jQuery
         var $ = giscloud.exposeJQuery();
-        
+
         function displayStatus() {
-            
+
             // get token
             var token = giscloud.oauth2.token();
-            
+
             // show the token if it's available
             if (token) {
                 $("#status").html("Your access token is <b>" + token + "</b>.");
@@ -23,12 +23,12 @@
                 $("#status").html("You currently don't have an access token.");
             }
         }
-        
+
         function onMapsLoadingDone(maps) {
-            
+
             var l = $("#list");
             l.html("");
-                
+
             if (maps && maps.length) {
                 $.each(maps, function (i, map) {
                     l.append("<li>" + map.name + " (id: " + map.id + ")</li>");
@@ -36,79 +36,79 @@
             } else {
                 l.html("No private map data retrieved.");
             }
-            
+
         }
-        
+
         function onMapsLoadingFailed() {
             $("#list").html("Failed to retrieve private maps.");
         }
-        
+
         function getMapsData() {
-                        
+
             $("#list").html("Loading...");
-            
-            // get maps - if there's a token available it will be used to 
+
+            // get maps - if there's a token available it will be used to
             // access private data
             giscloud.maps.list({ type: "private" })
             .done(onMapsLoadingDone)
             .fail(onMapsLoadingFailed);
         }
-        
+
         // once the page is ready
         giscloud.ready(function() {
-            
+
             // check token every second
             setInterval(displayStatus, 1000);
-            
-            // authorize with this app's client id ("ccb0db2768b14d7da0d6")
-            giscloud.oauth2.authorize("ccb0db2768b14d7da0d6", function() {
-				
+
+            // authorize with this app's client id ("cd1754ea9129cd0c0576")
+            giscloud.oauth2.authorize("cd1754ea9129cd0c0576", function() {
+
 			    // create the sign in button
                 giscloud.oauth2.button("authButton");
-				
+
 			});
-            
+
         });
-        
+
     </script>
-    
+
     <body>
         <h1>Authorization</h1>
         <p>
             This example shows how to use GIS Cloud Authorization to access your private data.
         </p>
-        
+
         <p>
             <div id="authButton"></div>
         </p>
-        
+
         <p>
             <div id="status"></div>
         </p>
-        
+
         <p>
             <a href="#" onclick="getMapsData(); return false;">List private maps</a>
         </p>
-        
+
         <ul id="list"></ul>
-        
+
         <p>
-            The code:           
+            The code:
         </p>
 <pre>// once the page is ready
 giscloud.ready(function() {
-    
+
     // check token every second
     setInterval(displayStatus, 1000);
-    
+
     // authorize with this app's client id, which is "ccb0db2768b14d7da0d6"
     giscloud.oauth2.authorize("ccb0db2768b14d7da0d6", function() {
-                
+
        // create the sign in button
        giscloud.oauth2.button("authButton");
-                
+
     });
-    
+
 });
 
 ...
@@ -118,11 +118,11 @@ var token = giscloud.oauth2.token();
 
 ...
 
-// get maps - if there's a token available it will be used to 
+// get maps - if there's a token available it will be used to
 // access private data
 giscloud.maps.list({ type: "private" })
 .done(onMapsLoadingDone)
 .fail(onMapsLoadingFailed);
-</pre>        
+</pre>
     </body>
 </html>

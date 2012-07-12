@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <html>
-	
+
     <title>simple mapping app example</title>
-	
+
     <link rel="stylesheet" type="text/css" href="examples.css"/>
-    <script type="text/javascript">window.gcForceFlashViewer = true;</script>
     <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-	
+
 	<script type="text/javascript">
-		
+
 		giscloud.ready(function() {
-			
+            mid =  77;
 			// create a viewer
-			var viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
-			
+			var viewer = window.viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+
 			// create a toolbar
-			var toolbar = new giscloud.ui.Toolbar({ 			
+			var toolbar = new giscloud.ui.Toolbar({
 			   viewer: viewer,
 			   container: "toolbar",
 			   defaultTools: ["pan", "zoom", "full", "measure"]
 			});
-			
+
 		});
-		
+
 	</script>
-	
+
 	<body>
 		<h1>Simple mapping app</h1>
 		<p>
-			This is an example of a simple mapping app created with the GIS Cloud JS API. 
+			This is an example of a simple mapping app created with the GIS Cloud JS API.
 		</p>
-		
+
 		<div id ="toolbar"></div>
 		<div id="mapViewer"></div>
-		
+
 		<p>
-            The code:			
+            The code:
 		</p>
 		<pre>
 giscloud.ready(function() {
-            
+
     // create a viewer
     var viewer = new giscloud.Viewer("mapViewer", 1);
-    
+
     // create a toolbar
-    var toolbar = new giscloud.ui.Toolbar({             
+    var toolbar = new giscloud.ui.Toolbar({
        viewer: viewer,
        container: "toolbar",
        defaultTools: ["pan", "zoom", "full", "measure"]
     });
-    
+
 });
 		</pre>
-		
+
 	</body>
 </html>
