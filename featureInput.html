@@ -69,9 +69,13 @@
             ex(4);
             feature.update().done(onUpdate);
         }
+        
+        function onDrawCancel() {
+            ex(7);
+        }
 
         function startDrawing() {
-            viewer.graphic.draw(geomType, onDrawEnd);
+            viewer.graphic.draw(geomType).then(onDrawEnd, onDrawCancel);
         }
 
         function ex(nr, param) {
@@ -101,6 +105,14 @@
                 break;
             case 6:
                 $("#ex6").hide("slow");
+                $("#ex1").show("slow");
+                break;
+            case 7:
+                $("#ex4").hide("slow");
+                $("#ex7").show("slow");
+                break;
+            case 8:
+                $("#ex7").hide("slow");
                 $("#ex1").show("slow");
                 break;
             }
@@ -179,7 +191,8 @@
                 <a href="#" onclick="return ex(3);">Go!</a>
             </div>
             <div id="ex4" class="ex" style="display: none">
-                Place your feature on the map. Doubleclick to finish drawing a line. Click on the first point to finish a polygon.
+                Place your feature on the map. Doubleclick to finish drawing a line. Click on the first point to finish a polygon.</br>
+                Press <b>Esc</b> to cancel.
             </div>
             <div id="ex5" class="ex" style="display: none">
                 Saving feature...
@@ -187,6 +200,10 @@
             <div id="ex6" class="ex" style="display: none">
                 Done!
                 <a href="#" onclick="return ex(6);">Try this again</a>
+            </div>
+            <div id="ex7" class="ex" style="display: none">
+                Cancelled.
+                <a href="#" onclick="return ex(8);">Start over</a>
             </div>
         </p>
 
