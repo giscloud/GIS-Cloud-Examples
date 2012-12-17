@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+    <title>feature info example</title>
+
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+
+    <script type="text/javascript">
+        var viewer,
+            $ = giscloud.exposeJQuery(),
+            selection = [];
+
+        function inSelection (feature) {
+            var i, l;
+
+            for (var i = 0, l = selection.length; i < l; i++) {
+                if (selection[i].featureId === feature.featureId &&
+                    selection[i].layerId === feature.layerId) {
+                    // return the index of the element
+                    return i;
+                }
+            }
+
+            // item not found in selection, return -1
+            return -1;
+        }
+
+        function removeSelection(feature) {
+            var i = inSelection(feature);
+
+            if (i > -1) {
+                // remove from array
+                selection.splice(i, 1);
+
+                // update the map selection
+                viewer.selection.selected(selection);
+
+                // update the list
+                showFeaturesInList();
+            }
+        }
+
+        function showFeaturesInList() {
+            // create a list with a list item for each
+            // of the selected features
+            var list = $("<ul/>").append(
+                // create an item for each selected feature
+                $.map(selection, function (feature) {
+                    return $("<li/>", { text: feature.featureId })
+                        // add a delete link with every feature
+                        .append(
+                            $("<a/>", { text: " (X)" })
+                            .click(function () {
+                                removeSelection(feature);
+                            })
+                        );
+                })
+            )
+            // empty the old features list and add the new one
+            $("#selectedFeatures")
+            .empty()
+            .append(list);
+        }
+
+        function onFeatureClick(feature) {
+            // see if the clicked feature is already a part of the selection
+            var i = inSelection(feature);
+
+            // if it is, i is the index, -1 otherwise
+            if (i === -1) {
+                // add to selection
+                selection.push({
+                    featureId: feature.featureId,
+                    layerId: feature.layerId
+                });
+            } else {
+                // remove from selection
+                selection.splice(i, 1);
+            }
+
+            // apply selection
+            viewer.selection.selected(selection);
+
+            // show a list of selected features
+            showFeaturesInList();
+        }
+
+        // wait for the global ready event...
+        giscloud.ready(function () {
+
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId);
+
+            // once the viewer has finished loading
+            viewer.loading.done(function () {
+                // enable selection
+                viewer.select(true);
+
+                // bind a handler to the feature click event
+                viewer.featureClick(onFeatureClick);
+            });
+
+        });
+
+    </script>
+
+    <style type="text/css">
+        #selectedFeatures ul {
+            list-style-type: none;
+            max-width: 400px;
+        }
+
+        #selectedFeatures ul li {
+            float: left;
+            display: block;
+            margin: 0.1em;
+            padding: 0.5em;
+            background-color: #ffe;
+            border-radius: 4px;
+            border: solid thin #ccc;
+        }
+
+        #selectedFeatures ul li a {
+            color: #33f;
+            cursor: pointer;
+        }
+
+    </style>
+
+    <body>
+        <h1>Multiple feature selection</h1>
+        <p>
+            If you want to enable multiple selection without using the keyboard and the ctrl button, you can do it like this.
+        </p>
+        <p>
+            After the viewer has finished loading, bind an event handler to the <i>featureClick</i> event which will add or remove
+            clicked features to an array. Pass that array as a parameter to the <i>viewer.selection.selected()</i> method to set
+            the selected features.
+        </p>
+        <div id="mapViewer"></div>
+        <p>Selected features:
+            <br/>
+            <div id="selectedFeatures"></div>
+            <br/>
+        </p>
+        <p style="clear: both">
+            <br/>
+            The code:
+        </p>
+<pre>
+var selection = [];
+
+function onFeatureClick(feature) {
+    // see if the clicked feature is already a part of the selection
+    var i = inSelection(feature);
+
+    // if it is, i is the index, -1 otherwise
+    if (i === -1) {
+        // add to selection
+        selection.push({
+            featureId: feature.featureId,
+            layerId: feature.layerId
+        });
+    } else {
+        // remove from selection
+        selection.splice(i, 1);
+    }
+
+    // apply selection
+    viewer.selection.selected(selection);
+
+    // show a list of selected features
+    showFeaturesInList();
+}
+</pre>
+    </body>
+</html>
