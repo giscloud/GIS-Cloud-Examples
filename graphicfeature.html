@@ -130,9 +130,7 @@ geometry = new giscloud.geometry.Polygon([new giscloud.geometry.Line(points)]);
 
 // create a style
 style = new giscloud.GraphicStyle("polygon");
-style.fill = giscloud.Color.randomHue(100, 60);
-style.color = style.fill.darker(30);
-style.size = 2;
+style.color = giscloud.Color.randomHue(100, 60);
 
 // create the graphic feature
 polygonGraphic = new giscloud.GraphicFeature(geometry, style);
