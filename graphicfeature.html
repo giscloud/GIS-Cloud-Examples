@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+    <title>Graphic features</title>
+
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+
+    <script type="text/javascript">
+        var viewer, polygonGraphic, $ = giscloud.exposeJQuery();
+
+        function randomPointsInsideBounds(bounds, n) {
+            var i, points = [];
+
+            for (i = 0; i < n; i++) {
+                points.push(new giscloud.geometry.Point(
+                    bounds.left + Math.random() * bounds.width(),
+                    bounds.bottom + Math.random() * bounds.height()
+                ));
+            }
+
+            return points;
+        }
+
+        function center(points) {
+            var i, n = points.length, sx = points[0].x, sy = points[0].y;
+
+            for (i = 1; i < n - 1; i++) { sx += points[i].x; }
+            for (i = 1; i < n - 1; i++) { sy += points[i].y; }
+
+            return new giscloud.geometry.Point(sx / n, sy / n);
+        }
+
+        function clockwise(points) {
+            var c = center(points);
+
+            return points.sort(function (a, b) {
+                var dxa = a.x - c.x, dya = a.y - c.y,
+                    dxb = b.x - c.x, dyb = b.y - c.y,
+                    pi2 = 2 * Math.PI,
+                    phia = (Math.atan2(dya, dxa) + pi2) % pi2,
+                    phib = (Math.atan2(dyb, dxb) + pi2) % pi2;
+
+                if (phia < phib) return 1;
+                if (phia > phib) return -1;
+                return 0;
+            });
+        }
+
+        function randomPoly() {
+            var bounds, points, n, geometry, style;
+
+            // remove existing graphic feature
+            if (polygonGraphic) {
+                viewer.graphic.remove(polygonGraphic);
+            }
+
+            // get current map bounds
+            bounds = viewer.bounds();
+
+            // get n random points inside current bounds
+            n = 4 + Math.ceil(Math.random() * 10);
+            points = clockwise(randomPointsInsideBounds(bounds, n));
+
+            // create polygon geometry
+            geometry = new giscloud.geometry.Polygon([new giscloud.geometry.Line(points)]);
+
+            // create a style
+            style = new giscloud.GraphicStyle("polygon");
+            style.color = giscloud.Color.randomHue(100, 60);
+
+            // create the graphic feature
+            polygonGraphic = new giscloud.GraphicFeature(geometry, style);
+
+            // add the feature to the map
+            viewer.graphic.add(polygonGraphic);
+        }
+
+        giscloud.ready(function () {
+
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+
+            // add button handlers after the viewer has loaded
+            viewer.loading.done(function () {
+                $("#addRandomPolygon")
+                .on("click", randomPoly)
+                .prop("disabled", false);
+            });
+
+        });
+
+
+
+    </script>
+
+    <style type="text/css">
+
+        #geom {
+            border: thin solid #ccc;
+            padding: 0.3em;
+            width: 100%;
+            margin-top: 0.5em;
+        }
+
+
+    </style>
+
+    <body>
+        <h1>Graphic features</h1>
+        <p>
+            The viewer's graphic object allows us to add custom graphic elements to the map.
+        </p>
+        <p>
+            Pressing the button below will take some random points inside the current bounds, </br>
+            create a polygon, and put the graphic feature to the map.
+        </p>
+        <p>
+            <button id="addRandomPolygon" disabled="disabled">Random polygon</button>
+        </p>
+
+        <div id="mapViewer"></div>
+
+        <p>
+            The code:
+        </p>
+<pre>// create polygon geometry
+geometry = new giscloud.geometry.Polygon([new giscloud.geometry.Line(points)]);
+
+// create a style
+style = new giscloud.GraphicStyle("polygon");
+style.fill = giscloud.Color.randomHue(100, 60);
+style.color = style.fill.darker(30);
+style.size = 2;
+
+// create the graphic feature
+polygonGraphic = new giscloud.GraphicFeature(geometry, style);
+
+// add the feature to the map
+viewer.graphic.add(polygonGraphic);
+</pre>
+
+    </body>
+</html>
