@@ -22,7 +22,8 @@
 		function getMapsData() {
 			
 			// get public maps
-			giscloud.maps.list(function(mapdata) {
+			giscloud.maps.list({ perPage: 20, sort: "visited:desc" })
+			.done(function(mapdata) {
                 var i, k, map;
                 
                 // mapdata contains an array of giscloud.Map objects
@@ -47,7 +48,7 @@
 		function getLayersData(mapId) {
 			
 			// get layers data
-			giscloud.layers.byMapId(mapId, function(layerdata) {
+			giscloud.layers.byMapId(mapId).done(function(layerdata) {
 				var i, k, layer;
 				
 				// layerdata contains an array of giscloud.Layer objects
@@ -117,7 +118,7 @@
 	<body>
 		<h1>Getting map and layer data</h1>
 		<p>
-			This example shows how to retrieve public map data from GIS Cloud.
+			This example shows how to retrieve public map data from GIS Cloud. You'll see 20 most visited maps in GIS Cloud.
 		</p>
 		
 		<p>
@@ -134,7 +135,8 @@
 function getMapsData() {
     
     // get public maps
-    giscloud.maps.list(function(mapdata) {
+    giscloud.maps.list({ perPage: 20, sort: "visited:desc" })
+    .done(function(mapdata) {
         var i, k, map;
         
         // mapdata contains an array of giscloud.Map objects
@@ -153,7 +155,8 @@ function getMapsData() {
 function getLayersData(mapId) {
     
     // get layers data
-    giscloud.layers.byMapId(mapId, function(layerdata) {
+    giscloud.layers.byMapId(mapId)
+    .done(function(layerdata) {
         var i, k, layer;
         
         // layerdata contains an array of giscloud.Layer objects
