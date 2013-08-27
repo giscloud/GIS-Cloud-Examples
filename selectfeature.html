@@ -8,14 +8,14 @@
     <script type="text/javascript" src="examples.js"></script>
     
     <script type="text/javascript">
-        var viewer, $ = giscloud.exposeJQuery();
+        var viewer, toolbar, $ = giscloud.exposeJQuery();
         giscloud.ready(function () {
             
             // create a viewer
             viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
             
 			// create a toolbar
-			new giscloud.ui.Toolbar({
+			toolbar = new giscloud.ui.Toolbar({
 				viewer: viewer,
 				container: "toolbar",
 				defaultTools: ["pan", "select"]
@@ -29,6 +29,11 @@
 					   .done(displayFeatureData);
 				}
 			});
+
+			viewer.loading.done(function () {
+			    toolbar.tools.select.activate();
+			});
+
         });
 		
 		function displayFeatureData(feature) {
@@ -80,9 +85,6 @@
             We'll use the default <i>select</i> tool combined with the viewer's <i>selectionChange</i> event to get 
 			the feature id. Then, through the <i>giscloud.features</i> object, we'll get the data and display it in
 			a table.
-        </p>
-        <p>
-            Pick the select tool from the toolbar above the map and click on a feature to display feature data.
         </p>
         
         <div id ="toolbar"></div>
