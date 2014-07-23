@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+    <title>create map-table-layer-feature</title>
+
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+
+    <style>
+
+        .disabled { opacity: 0.3 }
+
+        .disabled label,
+        .disabled button { display: none }
+
+    </style>
+
+    <script type="text/javascript">
+
+        var $ = giscloud.exposeJQuery(),
+            viewer, mapId, layerId, tableName;
+
+        // authorization is needed to create or update objects in GIS Cloud
+        giscloud.apiKey("0637f5945eeb535a3c83fb91a11b4fd7");
+
+        giscloud.ready(function () {
+
+            // prepare the viewer
+            viewer = new giscloud.Viewer("mapViewer");
+
+            // wire the buttons
+            $("#createMapBtn").click(step1).focus();
+            $("#createTableBtn").click(step2);
+            $("#createLayerBtn").click(step3);
+            $("#createFeatureBtn").click(step4);
+            $("#againBtn").click(step5);
+
+        });
+
+        function step1() {
+            var mapName, mapDef;
+
+            mapName = $("#mapNameInput").val();
+            if (!mapName) return;
+
+            // this is a map definition object for a map in the popular (Web) Mercator projection
+            mapDef = {
+                name: "Example created: " + mapName,
+                units: "meter",
+                proj4: "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
+            };
+
+            $("#mapPart").addClass("disabled");
+
+            // create map
+            giscloud.maps.create(mapDef)
+            .fail(function () {
+                $("#mapPart").removeClass("disabled");
+                alert("Create map failed");
+            })
+            .done(function (newMapId) {
+                // save the newly created map id
+                mapId = newMapId;
+                // go to the next step
+               $("#tablePart").removeClass("disabled");
+               $("#tableNameInput").focus();
+            });
+        }
+
+        function step2() {
+            var tableDef;
+
+            tableName = $("#tableNameInput").val();
+            if (!tableName) return;
+
+            // convert name to alphanumerics, max length 50
+            tableName = "xmpl_" + tableName.toLowerCase().replace(/(^[^a-z]+)|(\W+)/g, '_').substr(0, 50);
+            // add timestamp to help prevent overlaps with existing tables
+            tableName += $.now();
+
+            // create table definition
+            tableDef = {
+                name: tableName,
+                geometry: "point", // can also be "line", "polygon" etc.
+                srid: 4326, // gps coordinates (WGS84)
+                columns: {
+                    "text_field": { "type": "text" },
+                    "number_field": { "type": "!double precision" }
+                }
+            }
+
+            $("#tablePart").addClass("disabled");
+
+            // create table
+            giscloud.tables.create(tableDef)
+            .fail(function () {
+                $("#tablePart").removeClass("disabled");
+                alert("Create table failed");
+            })
+            .done(function () {
+                // next step
+                $("#layerPart").removeClass("disabled");
+                $("#layerNameInput").focus();
+            });
+        }
+
+        function step3() {
+            var layerName, layerDef;
+
+            layerName = $("#layerNameInput").val();
+            if (!layerName) return;
+
+            // first add the basemap layer
+            layerDef =  {
+                map_id: mapId, // use the saved map id here
+                name: "MapQuest OSM",
+                source: { "type": "tile", "src": "mapquest-osm" },
+                type: "tile",
+                x_min: "-20037508.3427892", x_max: "20037508.3427892",
+                y_min: "-20037508.3427892", y_max: "20037508.3427892",
+                visible: true
+            };
+
+            $("#layerPart").addClass("disabled");
+
+            // create basemap layer
+            (new giscloud.Layer(layerDef)).update()
+            .fail(function () {
+                $("#layerPart").removeClass("disabled");
+                alert("Create basemap layer failed");
+            })
+            .done(function () {
+                // now add the feature layer
+                layerDef.name = layerName;
+                layerDef.type = "point";
+                layerDef.styles = [{ "symbol": { "type": "circle", "color":"250,241,65", "border":"43,104,217", "bw":"2", "size":"14" } }];
+                layerDef.source = {
+                    "type": "pg", // postgis table is the source
+                    "src": tableName
+                };
+                (new giscloud.Layer(layerDef)).update()
+                .fail(function () {
+                    $("#layerPart").removeClass("disabled");
+                    alert("Create feature layer failed");
+                })
+                .done(function (newLayerId) {
+                    // save the layer id
+                    layerId = newLayerId;
+                    // continue to the next step
+                    $("#featurePart").removeClass("disabled");
+                    $("#featureLatInput").focus();
+                });
+            });
+        }
+
+        function step4() {
+            var featureDef, lonLat = new giscloud.LonLat(
+                    $("#featureLonInput").val(),
+                    $("#featureLatInput").val()
+                );
+
+            // check values
+            if (!lonLat.valid()) return;
+
+            // prepare feature definition
+            featureDef = {
+                geometry: new giscloud.geometry.Point(lonLat.lon, lonLat.lat).toOGC(),
+                data: {
+                    "text_field": $("#featureTextInput").val(),
+                    "number_field": parseFloat($("#featureTextInput").val()) || null
+                }
+            }
+
+            $("#featurePart").addClass("disabled");
+
+            // create a new feature
+            giscloud.features.create(layerId, featureDef)
+            .fail(function () {
+                alert("Create feature failed");
+                $("#featurePart").removeClass("disabled");
+            })
+            .done(function () {
+                $("#done").show();
+                viewer.loadMap(mapId);
+            })
+        }
+
+        function step5() {
+            // return to the start
+            $("#done").hide();
+            $("#mapPart").removeClass("disabled");
+            $("#mapNameInput").focus();
+        }
+    </script>
+
+    <body>
+        <h2>Creating GIS Cloud objects</h2>
+        <p>
+            This example shows you how to create some of the basic GIS objects.
+        </p>
+
+        <div id="mapPart">
+            <h3>Map</h3>
+            <p>First thing you'll need is a map. Set a name for it and press create.</p>
+            <p>
+                <label>Name: <input id="mapNameInput"/></label><button id="createMapBtn">Create</button>
+            </p>
+        </div>
+
+        <div id="tablePart" class="disabled">
+            <h3>Table</h3>
+            <p>Next, a table is required to hold feature data. Name will be converted to alphanumeric lowercase.</p>
+            <p>
+                <label>Name: <input id="tableNameInput"/></label><button id="createTableBtn">Create</button>
+            </p>
+        </div>
+
+        <div id="layerPart" class="disabled">
+            <h3>Layer</h3>
+            <p>A layer is defined with the table as the datasource, and the map as its parent. Set a name for it.</p>
+            <p>Another layer, the OSM basemap, will be added to the map as well.</p>
+            <p>
+                <label>Name: <input id="layerNameInput"/></label><button id="createLayerBtn">Create</button>
+            </p>
+        </div>
+
+
+        <div id="featurePart" class="disabled">
+            <h3>Feature</h3>
+            <p>
+                Set a latitude and a longitude using GPS coordinates for a new point feature.
+                You can also set some values for the new feature.
+            </p>
+            <p>
+                <label>Latitude: <input id="featureLatInput" value="51.5"/>&deg;</label><br/>
+                <label>Longitude: <input id="featureLonInput" value="-7.4"/>&deg;</label><br/>
+                <label>Text field: <input id="featureTextInput"/></label><br/>
+                <label>Number: <input typr="number" id="featureNumberInput"/></label><br/>
+                <button id="createFeatureBtn">Create</button>
+            </p>
+        </div>
+
+        <div id="done" style="display: none">
+            <h3>Done!</h3>
+            <div id="mapViewer"></div>
+            <button id="againBtn">Start over</button>
+        </div>
+    </body>
+</html>

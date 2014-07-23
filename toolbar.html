@@ -1,124 +1,124 @@
 <!DOCTYPE html>
 <html>
-    
+
     <title>custom toolbar example</title>
-    
+
     <link rel="stylesheet" type="text/css" href="examples.css"/>
     <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-    
+
     <script type="text/javascript">
         var viewer, tool1, tool2, myToolbar, $ = giscloud.exposeJQuery();
         giscloud.ready(function () {
-            
+
             // create a viewer
-            var viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
-            
+            viewer = new giscloud.Viewer("mapViewer", mapId);
+
             // create the first tool which shows coordinates in a <div>
-            tool1 = new giscloud.ui.Toolbar.Tool(            
+            tool1 = new giscloud.ui.Toolbar.Tool(
                 // tool name
-                "tool1", 
-                
+                "tool1",
+
                 // tool options
                 {
-                    styles: {                    
+                    styles: {
                         caption: "Coords in div",
                         showCaption: true,
                         cssClass: "mytool",
                         active: "mytool-active",
-                        hover: "mytool-hover"                    
+                        hover: "mytool-hover"
                     },
-                    actions: {                    
+                    actions: {
                         activation: function (viewer) {
                             // attach event handler
                             viewer.mouseMove(showInDiv); // or viewer.bind("mouseMove", showInDiv);
                         },
                         deactivation: function (viewer) {
-                            // detach event handler 
-                            //  --> note that in order to detach an event handler it is important to keep 
+                            // detach event handler
+                            //  --> note that in order to detach an event handler it is important to keep
                             //      a reference to the function originally passed to the event binding method
                             viewer.unbind("mouseMove", showInDiv);
-                            
+
                             // clear the div
                             $("#coords").html("");
-                        }                        
+                        }
                     }
                 }
             );
-            
+
             // create the second tool which will display coordinates in a map tip
-            tool2 = new giscloud.ui.Toolbar.Tool(           
+            tool2 = new giscloud.ui.Toolbar.Tool(
                 // tool name
-                "tool2", 
-                
+                "tool2",
+
                 // tool options
                 {
-                    styles: {                   
+                    styles: {
                         caption: "Coords in map tip",
                         showCaption: true,
                         cssClass: "mytool",
                         active: "mytool-active",
-                        hover: "mytool-hover"                   
+                        hover: "mytool-hover"
                     },
-                    actions: {                  
+                    actions: {
                         activation: function (viewer) {
                             // attach event handler
                             viewer.mouseMove(showInMapTip); // or viewer.bind("mouseMove", showInMapTip);
                         },
                         deactivation: function (viewer) {
-                            // detach event handler 
+                            // detach event handler
                             viewer.unbind("mouseMove", showInMapTip);
                             // hide map tip
                             viewer.hideTip();
-                        }                       
+                        }
                     }
                 }
             );
-            
+
             // create the toolbar
             myToolbar = new giscloud.ui.Toolbar(
-                
+
                 // options
                 {
                     viewer: viewer,
                     container: "toolbar"
                 }
             );
-            
+
             // add some tools
             myToolbar.add(tool1, tool2);
-            
+
             // bind a handler to the toolbar's toolChange event
             myToolbar.toolChange(function (oldTool, newTool) {
                 $("#activeTool").html(newTool.name);
             });
-            
+
             // activate the first tool
             myToolbar.tools["tool1"].activate();
-            
-            
-            
+
+
+
         });
-        
+
         function showInDiv(coords) {
             $("#coords").html(coords.toString());
         }
-        
+
         function showInMapTip(coords) {
             this.showTip(coords.toString());
         }
-        
+
     </script>
-    
+
     <style type="text/css">
-        
+
         #coords {
             border: thin solid #ccc;
             height: 1em;
             padding: 0.3em;
             margin-top: 0.5em;
         }
-        
+
         .mytool {
             margin: 0.1em 0.2em;
             padding: 0em 0.8em;
@@ -126,24 +126,24 @@
             color: #444;
             cursor: pointer;
         }
-        
+
         .mytool-active {
             background-color: #999;
             color: #eee;
         }
-        
+
         .mytool-hover {
             text-decoration: underline;
-            
+
         }
-        
-        
+
+
     </style>
-    
+
     <body>
         <h1>Custom tools and toolbars</h1>
         <p>
-            Tools are an efficient way to communicate with the viewer. Additionally, 
+            Tools are an efficient way to communicate with the viewer. Additionally,
             tools can be placed on a toolbar which then takes care of the tools being active
             only one at a time.
         </p>
@@ -151,82 +151,82 @@
             This example shows you how to make custom tools and add them to a toolbar.
         </p>
         <p>
-            The tools are very simple. One will make current coordinates be displayed in a &lt;div&gt; 
+            The tools are very simple. One will make current coordinates be displayed in a &lt;div&gt;
             element placed under the map, and the other will make coordinates be dispalyed as a map tip.
         </p>
         <p>
             The currently active tool is <b><span id="activeTool"></span></b>.
         </p>
-        
+
         <div id ="toolbar"></div>
         <div id="mapViewer"></div>
         <div id="coords"></div>
-        
+
         <p>
-            The code:           
+            The code:
         </p>
 <pre>// create the first tool which shows coordinates in a &lt;div&gt;
 tool1 = new <b>giscloud.ui.Toolbar.Tool</b>(
 
     // tool name
-    "tool1", 
-    
+    "tool1",
+
     // tool options
     {
-        styles: {                   
+        styles: {
             caption: "Coords in div",
             showCaption: true,
             cssClass: "mytool",
             active: "mytool-active",
-            hover: "mytool-hover"                   
+            hover: "mytool-hover"
         },
-        actions: {                  
+        actions: {
             activation: function (viewer) {
                 // attach event handler
-                viewer.mouseMove(showInDiv); 
+                viewer.mouseMove(showInDiv);
                 // or viewer.bind("mouseMove", showInDiv);
             },
             deactivation: function (viewer) {
-                // detach event handler 
-                //  --> note that in order to detach an event handler it is 
-                //      necessary to keep a reference to the function originally 
+                // detach event handler
+                //  --> note that in order to detach an event handler it is
+                //      necessary to keep a reference to the function originally
                 //      passed to the event binding method
                 viewer.unbind("mouseMove", showInDiv);
-                
+
                 // clear the div
                 $("#coords").html("");
-            }                       
+            }
         }
     }
 );
 
 
 // create the second tool which will display coordinates in a map tip
-tool2 = new <b>giscloud.ui.Toolbar.Tool</b>( 
-          
+tool2 = new <b>giscloud.ui.Toolbar.Tool</b>(
+
     // tool name
-    "tool2", 
-    
+    "tool2",
+
     // tool options
     {
-        styles: {                   
+        styles: {
             caption: "Coords in map tip",
             showCaption: true,
             cssClass: "mytool",
             active: "mytool-active",
-            hover: "mytool-hover"                   
+            hover: "mytool-hover"
         },
-        actions: {                  
+        actions: {
             activation: function (viewer) {
                 // attach event handler
                 viewer.mouseMove(showInMapTip);
             },
             deactivation: function (viewer) {
-                // detach event handler 
+                // detach event handler
                 viewer.unbind("mouseMove", showInMapTip);
                 // hide map tip
                 viewer.hideTip();
-            }                       
+            }
         }
     }
 );
@@ -234,7 +234,7 @@ tool2 = new <b>giscloud.ui.Toolbar.Tool</b>(
 
 // create the toolbar
 myToolbar = <b>new giscloud.ui.Toolbar</b>(
-    
+
     // options
     {
         viewer: viewer,
@@ -251,12 +251,12 @@ myToolbar.add(tool1, tool2);
 myToolbar.toolChange(function (oldTool, newTool) {
 
     $("#activeTool").html(newTool.name);
-	
+
 });
 
 
 // activate the first tool
 myToolbar.tools["tool1"].activate();</pre>
-        
+
     </body>
 </html>
