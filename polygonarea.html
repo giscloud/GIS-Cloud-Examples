@@ -88,7 +88,7 @@
         function drawPolygon(){
             var polygonWkt = $("#polygonWkt").val();
             if (!polygonWkt) return;
-            var style, geometry, points, polygon, inputPolygonGeometry = giscloud.geometry.fromOGC(polygonWkt);
+            var style, geometry, points, polygon, inputPolygonGeometry = giscloud.geometry.fromOGC(polygonWkt), isValid = true;
 
             // remove existing graphic feature
             if (polygonGraphic) {
@@ -98,9 +98,10 @@
             points = inputPolygonGeometry.rings[0].points.map(function(point){
                 var lonlat = new giscloud.LonLat(point.x, point.y);  
                 lonlat.transform(4326, 900913);
+                if(!lonlat.valid()) isValid = false;
                 return new giscloud.geometry.Point(lonlat.lon, lonlat.lat);
             });
-
+            if(!isValid) return;
             // create polygon geometry
             geometry = new giscloud.geometry.Polygon([new giscloud.geometry.Line(points)]);
 
