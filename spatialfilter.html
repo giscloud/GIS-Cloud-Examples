@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <title>Spatial filter</title>
+
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
+
+    <script type="text/javascript">
+        var $ = giscloud.exposeJQuery(), mapId = 1196698, layerId = 3157483;
+
+        function displaySelectedFeatures(data) {
+            var allFeatureIds = data.features.reduce(
+                function(all, feature) {
+                    return all + (all ? ", " : "") + feature.id;
+                }, '');
+            $("#result").text(allFeatureIds);
+        }
+
+        giscloud.ready(function () {
+            var viewer, tool, toolbar;
+
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+
+            // get the giscloud freehand tool
+            tool = giscloud.ui.defaultTools.freehand({layerId: layerId});
+
+            // create toolbar
+            toolbar = new giscloud.ui.Toolbar({
+                viewer: viewer,
+            });
+
+            // add freehand tool to toolbar
+            toolbar.add(tool);
+
+            // activate the freehand tool
+            toolbar.tools["freehand"].activate();
+
+            // set a callback function after new features are selected
+            tool.bind("selectFeatures", displaySelectedFeatures);
+        });
+
+    </script>
+
+    <style type="text/css">
+        #result-container{
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        #selected-features{
+            display: inline;
+        }
+        #result{
+            color: blue;
+            display: inline;
+        }
+    </style>
+
+    <body>
+        <a href="https://github.com/giscloud/GIS-Cloud-Examples/">
+            <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+        </a>
+        <h1>Spatial filter</h1>
+        <p>
+            Draw a freehand shape on the map and you will get IDs of features that intersect the shape.
+        </p>
+        <div id="result-container">
+            <div id="selected-features">Selected Feature IDs: </div>
+            <div id="result"></div>
+        </div>
+        <div id="mapViewer"></div>
+
+        <p>
+            The code:
+        </p>
+<pre>
+// create a viewer
+viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+
+// get the giscloud freehand tool
+tool = giscloud.ui.defaultTools.freehand({layerId: layerId});
+
+// create toolbar
+toolbar = new giscloud.ui.Toolbar({
+    viewer: viewer,
+});
+
+// add freehand tool to toolbar
+toolbar.add(tool);
+
+// activate the freehand tool
+toolbar.tools["freehand"].activate();
+
+// set a callback function after new features are selected
+tool.bind("selectFeatures", displaySelectedFeatures);
+</pre>
+    </body>
+</html>
