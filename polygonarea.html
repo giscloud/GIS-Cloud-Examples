@@ -75,7 +75,7 @@
 
             //transform polygon to WGS84 projection
             geometryPointsWGS84 = geometry.rings[0].points.map(function(point) {
-                var lonlat = new giscloud.LonLat(point.x, point.y);  
+                var lonlat = new giscloud.LonLat(point.x, point.y);
                 lonlat.transform(900913, 4326);
                 return new giscloud.geometry.Point(lonlat.lon, lonlat.lat);
             });
@@ -83,7 +83,7 @@
             WGS84Wkt = geometryWGS84.toOGC();
             //put the random polygon in WKT format to the text area
             $("#polygonWkt").val(WGS84Wkt);
-            
+
         }
         function drawPolygon(){
             var polygonWkt = $("#polygonWkt").val();
@@ -96,7 +96,7 @@
             }
             //transform polygon to 900913 projection
             points = inputPolygonGeometry.rings[0].points.map(function(point){
-                var lonlat = new giscloud.LonLat(point.x, point.y);  
+                var lonlat = new giscloud.LonLat(point.x, point.y);
                 lonlat.transform(4326, 900913);
                 if(!lonlat.valid()) isValid = false;
                 return new giscloud.geometry.Point(lonlat.lon, lonlat.lat);
@@ -156,10 +156,10 @@
         </p><p> You can either type in a polygon in the WKT format or you can create a random polygon.
         </p>
         <p>
-            Pressing the button <b>Create a random polygon</b> will take some random points inside the current bounds and 
-            create a polygon. 
+            Pressing the button <b>Create a random polygon</b> will take some random points inside the current bounds and
+            create a polygon.
         </p>
-        <p>  
+        <p>
             The <b>Draw polygon on map</b> button draws the graphic feature on the map.</br>
             The <b>Calculate area</b> button calculates the polygon area in the EPSG:900913 projection.
         </p>
@@ -168,7 +168,7 @@
             <button id="addRandomPolygon" disabled="disabled">Create a random polygon</button>
             <button id="drawPolygon" disabled="disabled">Draw polygon on map</button>
             <button id="calculateButton" disabled="disabled">Calculate area</button>
-           
+
         </div>
         <div id="result"></div>
         <div id="mapViewer"></div>
@@ -183,7 +183,7 @@ var polygonGeometry = giscloud.geometry.fromOGC(polygonWkt);
 var resultContainer = $("#result");
 
 // calculate the area of the polygonGeometry
-// the geometry srid is 4326, output srid is 900913 
+// the geometry srid is 4326, output srid is 900913
 giscloud.geoutils.area(polygonGeometry, 4326, 900913, function(result){
     resultContainer.text(result + " m");
 })
