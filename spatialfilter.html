@@ -6,51 +6,78 @@
     <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
 
     <script type="text/javascript">
-        var $ = giscloud.exposeJQuery(), mapId = 1198964, layerId = 3163194;
+        var $ = giscloud.exposeJQuery(), mapId = 1198964, layerId = 3163194, gcPolygon, viewer;
 
-        function displaySelectedFeatures(data) {
-            var allFeatureIds = data.features.reduce(
-                function(all, feature) {
-                    return all + (all ? ", " : "") + feature.id;
-                }, '');
-            $("#result").text(allFeatureIds);
+        function displayFeatures(result) {
+            var allFeatureIds = [];
+
+            viewer.selection.clear();
+
+            result.forEach(function(feature) {
+                allFeatureIds.push(feature.id);
+            });
+
+            // select features on map
+            viewer.selection.add(allFeatureIds, layerId)
+            $("#result").text("[" + allFeatureIds.join(", ") + "]");
+        }
+
+        function doSpatialFilter(operation) {
+            giscloud.geoutils.spatialFilter(gcPolygon, [layerId], {srid: 900913, operation: operation})
+            .done(function(result) {
+                displayFeatures(result)
+            });
+        }
+
+        function reset() {
+            // clear current polygon from map
+            viewer.graphic.clear();
+
+            // clear current selection from map
+            viewer.selection.clear();
+
+            // clear text
+            $("#result").text("[]");
+
+            enableDrawing();
+        }
+
+        function enableDrawing() {
+            // set viewer to drawing mode
+            viewer.graphic.draw("polygon").done(function(result) {
+                gcPolygon = result.geometry();
+            });
         }
 
         giscloud.ready(function () {
-            var viewer, tool, toolbar;
-
             // create a viewer
             viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
 
-            // get the giscloud freehand tool
-            tool = giscloud.ui.defaultTools.freehand({layerId: layerId});
-
-            // create toolbar
-            toolbar = new giscloud.ui.Toolbar({
-                viewer: viewer,
+            viewer.loading.done(function() {
+                enableDrawing();
+                $("#draw-new-polygon").prop("disabled", false);
+                $("#intersect").prop("disabled", false);
+                $("#within").prop("disabled", false);
+                $("#outside").prop("disabled", false);
+                $("#contains").prop("disabled", false);
+                $("#overlaps").prop("disabled", false);
+                $("#touches").prop("disabled", false);
             });
-
-            // add freehand tool to toolbar
-            toolbar.add(tool);
-
-            // activate the freehand tool
-            toolbar.tools["freehand"].activate();
-
-            // set a callback function after new features are selected
-            tool.bind("selectFeatures", displaySelectedFeatures);
         });
-
     </script>
 
     <style type="text/css">
-        #result-container{
+        #result-container {
             margin: 20px 0;
             font-size: 16px;
         }
-        #selected-features{
+        #draw-new-polygon {
+            margin-bottom: 20px;
+        }
+        #selected-features {
             display: inline;
         }
-        #result{
+        #result {
             color: blue;
             display: inline;
         }
@@ -62,11 +89,23 @@
         </a>
         <h1>Spatial filter</h1>
         <p>
-            Draw a freehand shape on the map and you will get IDs of features that intersect the shape.
+            Draw a polygon by clicking a few points on the map. After that, pick a spatial filter operation to be executed on the layer.
+            As a result, you will get feature IDs that are returned from the spatial filter request.
         </p>
+        <p>You can reset the polygon you drew and draw a new one by clicking the "Draw new polygon" button.</p>
+
+        <button id="draw-new-polygon" disabled="disabled" onclick="reset()">Draw new polygon</button>
+        <div id="button-container">
+            <button id="intersect" disabled="disabled" onclick="doSpatialFilter('intersect')">Intersect</button>
+            <button id="within" disabled="disabled" onclick="doSpatialFilter('within')">Within</button>
+            <button id="outside" disabled="disabled" onclick="doSpatialFilter('outside')">Outside</button>
+            <button id="contains" disabled="disabled" onclick="doSpatialFilter('contains')">Contains</button>
+            <button id="overlaps" disabled="disabled" onclick="doSpatialFilter('overlaps')">Overlaps</button>
+            <button id="touches" disabled="disabled" onclick="doSpatialFilter('touches')">Touches</button>
+        </div>
         <div id="result-container">
             <div id="selected-features">Selected Feature IDs: </div>
-            <div id="result"></div>
+            <div id="result">[]</div>
         </div>
         <div id="mapViewer"></div>
 
@@ -74,25 +113,55 @@
             The code:
         </p>
 <pre>
-// create a viewer
-viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+function displayFeatures(result) {
+    var allFeatureIds = [];
 
-// get the giscloud freehand tool
-tool = giscloud.ui.defaultTools.freehand({layerId: layerId});
+    viewer.selection.clear();
 
-// create toolbar
-toolbar = new giscloud.ui.Toolbar({
-    viewer: viewer,
+    result.forEach(function(feature) {
+        allFeatureIds.push(feature.id);
+    });
+
+    // select features on map
+    viewer.selection.add(allFeatureIds, layerId)
+    $("#result").text("[" + allFeatureIds.join(", ") + "]");
+}
+
+function doSpatialFilter(operation) {
+    giscloud.geoutils.spatialFilter(gcPolygon, [layerId], {srid: 900913, operation: operation})
+    .done(function(result) {
+        displayFeatures(result)
+    });
+}
+
+function reset() {
+    // clear current polygon from map
+    viewer.graphic.clear();
+
+    // clear current selection from map
+    viewer.selection.clear();
+
+    // clear text
+    $("#result").text("[]");
+
+    enableDrawing();
+}
+
+function enableDrawing() {
+    // set viewer to drawing mode
+    viewer.graphic.draw("polygon").done(function(result) {
+        gcPolygon = result.geometry();
+    });
+}
+
+giscloud.ready(function () {
+    // create a viewer
+    viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
+
+    viewer.loading.done(function() {
+        enableDrawing();
+    });
 });
-
-// add freehand tool to toolbar
-toolbar.add(tool);
-
-// activate the freehand tool
-toolbar.tools["freehand"].activate();
-
-// set a callback function after new features are selected
-tool.bind("selectFeatures", displaySelectedFeatures);
 </pre>
     </body>
 </html>
