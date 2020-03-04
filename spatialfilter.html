@@ -6,7 +6,7 @@
     <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
 
     <script type="text/javascript">
-        var $ = giscloud.exposeJQuery(), mapId = 1198964, layerId = 3163194, gcPolygon, viewer;
+        var $ = giscloud.exposeJQuery(), mapId = 1198964, layerId = 3163194, geometryObject, viewer;
 
         function displayFeatures(result) {
             var allFeatureIds = [];
@@ -23,7 +23,7 @@
         }
 
         function doSpatialFilter(operation) {
-            giscloud.geoutils.spatialFilter(gcPolygon, [layerId], {srid: 900913, operation: operation})
+            giscloud.geoutils.spatialFilter(geometryObject, [layerId], {srid: 900913, operation: operation})
             .done(function(result) {
                 displayFeatures(result)
             });
@@ -45,7 +45,7 @@
         function enableDrawing() {
             // set viewer to drawing mode
             viewer.graphic.draw("polygon").done(function(result) {
-                gcPolygon = result.geometry();
+                geometryObject = result.geometry();
             });
         }
 
@@ -113,54 +113,13 @@
             The code:
         </p>
 <pre>
-function displayFeatures(result) {
-    var allFeatureIds = [];
+// geometryObject is a giscloud.geometry object. <a href="http://developers.giscloud.com/javascript-api/javascript-reference/#giscloud.geometry.Polygon" target="blank">See more</a>
+// its the polygon we drew on the map
+// it can be created from wkt by calling giscloud.geometry.fromOGC(polygonWkt)
 
-    viewer.selection.clear();
-
-    result.forEach(function(feature) {
-        allFeatureIds.push(feature.id);
-    });
-
-    // select features on map
-    viewer.selection.add(allFeatureIds, layerId)
-    $("#result").text("[" + allFeatureIds.join(", ") + "]");
-}
-
-function doSpatialFilter(operation) {
-    giscloud.geoutils.spatialFilter(gcPolygon, [layerId], {srid: 900913, operation: operation})
-    .done(function(result) {
-        displayFeatures(result)
-    });
-}
-
-function reset() {
-    // clear current polygon from map
-    viewer.graphic.clear();
-
-    // clear current selection from map
-    viewer.selection.clear();
-
-    // clear text
-    $("#result").text("[]");
-
-    enableDrawing();
-}
-
-function enableDrawing() {
-    // set viewer to drawing mode
-    viewer.graphic.draw("polygon").done(function(result) {
-        gcPolygon = result.geometry();
-    });
-}
-
-giscloud.ready(function () {
-    // create a viewer
-    viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
-
-    viewer.loading.done(function() {
-        enableDrawing();
-    });
+giscloud.geoutils.spatialFilter(geometryObject, [layerId], {srid: 900913, operation: operation})
+.done(function(result) {
+    displayFeatures(result)
 });
 </pre>
     </body>
