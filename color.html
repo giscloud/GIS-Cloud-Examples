@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
-    
+
     <title>giscloud jsapi color example</title>
-    
-    
+
+
     <!--<link rel="stylesheet" type="text/css" href="reset.css"/>-->
-    <link rel="stylesheet" href="farbtastic.css" type="text/css" />    
+    <link rel="stylesheet" href="farbtastic.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="examples.css"/>
     <link rel="stylesheet" type="text/css" href="colors.css"/>
-    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>    
+    <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-    
+
     <script type="text/javascript">
         var c1, c2, cp1, cp2, nr, mode;
-        
+
         giscloud.ready(function() {
             window.$ = window.jQuery = giscloud.exposeJQuery();
-            
+
             c1 = new giscloud.Color.fromHsl(0, 100, 50);
             c2 = new giscloud.Color.fromHsl(120, 100, 50);
             nr = 5;
-            
+
             // create colorpickers
             giscloud.includeJs("farbtastic.js").done(function () {
                 $("#colInput1").html(c1.hex());
@@ -41,14 +41,14 @@
                     $("#colorpicker1").toggle("fast");
                     $("#colorpicker2").hide();
                     evt.stopPropagation();
-                    
+
                 });
                 $("#colInput2").click(function (evt) {
-                    $("#colorpicker2").toggle("fast");                    
-                    $("#colorpicker1").hide();                
+                    $("#colorpicker2").toggle("fast");
+                    $("#colorpicker1").hide();
                     evt.stopPropagation();
                 });
-                
+
                 $(document).click(function () {
                     $("#colorpicker1,#colorpicker2").hide();
                 });
@@ -56,108 +56,108 @@
                     evt.stopPropagation();
                 });
                 $(document).keyup(function(e) {
-                    if (e.keyCode === 27) { 
+                    if (e.keyCode === 27) {
                       $("#colorpicker1,#colorpicker2").hide();
                     }
                 });
 
             });
-            
+
             mode = $("#rangeMode").val();
-            
+
             refresh();
-            
+
             $("input").change(onchange);
             $("#rangeMode").change(onchange);
-            
+
         });
-        
-        
+
+
         // refreshes all the values
         function refresh() {
             var rgb1, rgb2, hsv1, hsv2, hsl1, hsl2;
-            
+
             rgb1 = c1.rgb();
             rgb2 = c2.rgb();
             hsv1 = c1.hsv(true);
             hsv2 = c2.hsv(true);
             hsl1 = c1.hsl(true);
             hsl2 = c2.hsl(true);
-                        
+
             $("input").each(function () {
                 switch (this.id) {
                 // RGB
-                case "r1": 
+                case "r1":
                     this.value = rgb1[0];
                     break;
-                case "g1": 
+                case "g1":
                     this.value = rgb1[1];
                     break;
-                case "b1": 
+                case "b1":
                     this.value = rgb1[2];
                     break;
-                case "r2": 
+                case "r2":
                     this.value = rgb2[0];
                     break;
-                case "g2": 
+                case "g2":
                     this.value = rgb2[1];
                     break;
-                case "b2": 
+                case "b2":
                     this.value = rgb2[2];
                     break;
                 // HSV
-                case "hv1": 
+                case "hv1":
                     this.value = hsv1[0];
                     break;
-                case "sv1": 
+                case "sv1":
                     this.value = hsv1[1];
                     break;
-                case "v1": 
+                case "v1":
                     this.value = hsv1[2];
                     break;
-                case "hv2": 
+                case "hv2":
                     this.value = hsv2[0];
                     break;
-                case "sv2": 
+                case "sv2":
                     this.value = hsv2[1];
                     break;
-                case "v2": 
+                case "v2":
                     this.value = hsv2[2];
-                    break;                
+                    break;
                 // HSL
-                case "hl1": 
+                case "hl1":
                     this.value = hsl1[0];
                     break;
-                case "sl1": 
+                case "sl1":
                     this.value = hsl1[1];
                     break;
-                case "l1": 
+                case "l1":
                     this.value = hsl1[2];
                     break;
-                case "hl2": 
+                case "hl2":
                     this.value = hsl2[0];
                     break;
-                case "sl2": 
+                case "sl2":
                     this.value = hsl2[1];
                     break;
-                case "l2": 
+                case "l2":
                     this.value = hsl2[2];
                     break;
                 // NR
-                case "nrOfSwatches":               
+                case "nrOfSwatches":
                     this.value = nr;
                     break;
                 }
             });
-            
+
             swatches();
-            
+
         }
-        
+
         // reacts to changes in color values
         function onchange() {
             var id = this.id, v = parseInt(this.value, 10), o, r, m, c;
-            
+
             if (id === undefined) {
                 return;
             } else if (id === "rangeMode") {
@@ -165,7 +165,7 @@
                 refresh();
                 return;
             }
-            
+
             // check for bad input
             if (v === null || isNaN(v) || v < 0) {
                 o = $(this);
@@ -179,10 +179,10 @@
                     o.removeClass("err");
                 }
             }
-            
+
             // find out what changed
             r = /((((r)|(g)|(b))|((hl)|(sl)|(l))|((hv)|(sv)|(v)))([12]))|(nrOfSwatches)/;
-            m = id.match(r);            
+            m = id.match(r);
             if (m) {
                 if (m[16]) { // nr
                     nr = v;
@@ -212,39 +212,39 @@
                         c.hsv(null, v, null);
                     } else if (m[11] && m[14]) {   // v hsv
                         c.hsv(null, null, v);
-                    }                    
+                    }
                 }
-                
+
                 // set colorpicker value
                 if (m[15] == "1") {
                     cp1.setColor(c.hex());
                 } else if (m[15] == "2") {
-                    cp2.setColor(c.hex()); 
+                    cp2.setColor(c.hex());
                 }
-                
+
                 // refresh all the values
                 refresh();
             }
         }
-        
+
         // creates the color swatches on the colorbar
         function swatches() {
             var r, cbar, w, i, hex, d;
-            
+
             cbar = $("#colorbar");
             if (!cbar || cbar.length === 0) {
                 return;
-            } 
-            
+            }
+
             // create the range of colors
             r = giscloud.Color.range(c1, c2, nr, mode);
-            
+
             // calc the width of each swatch (except the last one)
             w = Math.round(parseInt(cbar.width(), 10) / nr);
-            
+
             // clear colorbar
             cbar.html("");
-            
+
             // generate swatches
 	    w = (100 / nr) + "%";
             for (i = 0; i < nr; i++) {
@@ -259,9 +259,9 @@
                 cbar.append(d);
             }
         }
-        
+
     </script>
-    
+
     <body>
         <h1>Colors</h1>
         <div id="example">
@@ -293,7 +293,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div id="col2">
                 <table>
                     <thead>
@@ -321,30 +321,30 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div id="controls">
-                Nr of colors: <input id="nrOfSwatches" type="text" maxlength="2"/> 
+                Nr of colors: <input id="nrOfSwatches" type="text" maxlength="2"/>
                 Range mode: <select id="rangeMode">
                     <option value="hsl cw" selected="true">HSL CW</option>
                     <option value="hsl ccw">HSL CCW</option>
                     <option value="rgb">RGB</option>
                     <option value="hsv cw">HSV CW</option>
                     <option value="hsv ccw">HSV CCW</option>
-                    
+
                 </select>
             </div>
-            
+
             <!-- colorpickers -->
             <div id="colorpicker1" class="hide"></div>
             <div id="colorpicker2" class="hide"></div>
-            
+
             </form>
-            
+
             <div id="colorbar"></div>
         </div>
         <div id="ft">
             <p>
-                This example uses the 
+                This example uses the
                 <a href="http://acko.net/dev/farbtastic" target="_blank" title="Farbtastic by Steven Wittens - acko.net">
                     Farbtastic jQuery colorpicker plugin
                 </a> made by Steven Wittens.

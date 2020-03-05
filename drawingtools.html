@@ -1,149 +1,149 @@
 <!DOCTYPE html>
 <html>
-    
+
     <title>Drawing tools</title>
-    
+
     <link rel="stylesheet" type="text/css" href="examples.css"/>
     <script type="text/javascript">window.gcForceFlashViewer = false;</script>
-    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-    
+
     <script type="text/javascript">
         var viewer, tool, $ = giscloud.exposeJQuery();
         giscloud.ready(function () {
-            
+
             // create a viewer
             viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
-            
+
             // create the toolbar and add the tools
             new giscloud.ui.Toolbar({
                     viewer: viewer,
                     container: "toolbar"
             }).add(
-			    
+
 				// point tool
                 new giscloud.ui.Toolbar.Tool("pointTool", {
                         instant: true,
-                        styles: {                    
+                        styles: {
                             caption: "Point",
                             showCaption: true,
                             cssClass: "mytool",
                             active: "mytool-active",
-                            hover: "mytool-hover"                    
+                            hover: "mytool-hover"
                         },
-                        actions: {                    
+                        actions: {
                             activation: function (viewer) {
-                                
+
                                 // start drawing
                                 viewer.graphic.draw("point",
                                     function (feat) {
-                                        
+
                                         // output wkt
                                         outputOgcWkt(feat.geometry().toOGC());
-                                        
+
                                     }
                                 );
-                                
-                            }                 
+
+                            }
                         }
                     }
                 ),
-				
+
 				// line tool
                 new giscloud.ui.Toolbar.Tool("lineTool", {
                         instant: true,
-                        styles: {                    
+                        styles: {
                             caption: "Line",
                             showCaption: true,
                             cssClass: "mytool",
                             active: "mytool-active",
-                            hover: "mytool-hover"                    
+                            hover: "mytool-hover"
                         },
-                        actions: {                    
+                        actions: {
                             activation: function (viewer) {
-                                
+
                                 // start drawing
                                 viewer.graphic.draw("line",
                                     function (feat) {
-                                        
+
                                         // output wkt
                                         outputOgcWkt(feat.geometry().toOGC());
-                                        
+
                                     }
                                 );
-                                
-                            }                 
+
+                            }
                         }
                     }
                 ),
-				
+
 				// polygon tool
                 new giscloud.ui.Toolbar.Tool("polygonTool", {
                         instant: true,
-                        styles: {                    
+                        styles: {
                             caption: "Polygon",
                             showCaption: true,
                             cssClass: "mytool",
                             active: "mytool-active",
-                            hover: "mytool-hover"                    
+                            hover: "mytool-hover"
                         },
-                        actions: {                    
+                        actions: {
                             activation: function (viewer) {
-                                
+
                                 // start drawing
                                 viewer.graphic.draw("polygon",
                                     function (feat) {
-                                        
+
                                         // output wkt
                                         outputOgcWkt(feat.geometry().toOGC());
-                                        
+
                                     }
                                 );
-                                
-                            }                 
+
+                            }
                         }
                     }
                 ),
-				
+
 				// clear
                 new giscloud.ui.Toolbar.Tool("clearTool", {
                         instant: true,
-                        styles: {                    
+                        styles: {
                             caption: "Clear",
                             showCaption: true,
                             cssClass: "mytool",
                             active: "mytool-active",
-                            hover: "mytool-hover"                    
+                            hover: "mytool-hover"
                         },
-                        actions: {                    
+                        actions: {
                             activation: function (viewer) {
-                                
+
                                 // clear graphic layer
                                 viewer.graphic.clear();
-                                
-                            }                 
+
+                            }
                         }
                     }
                 )
             );
-            
+
         });
-        
+
         function outputOgcWkt(wkt) {
             $("#geom").html(wkt);
         }
-        
+
     </script>
-    
+
     <style type="text/css">
-        
+
         #geom {
             border: thin solid #ccc;
             padding: 0.3em;
             width: 100%;
             margin-top: 0.5em;
         }
-        
+
         .mytool {
             margin: 0.1em 0.2em;
             padding: 0em 0.8em;
@@ -151,67 +151,67 @@
             color: #444;
             cursor: pointer;
         }
-        
+
         .mytool-active {
             background-color: #999;
             color: #eee;
         }
-        
+
         .mytool-hover {
             text-decoration: underline;
-            
+
         }
-        
-        
+
+
     </style>
-    
+
     <body>
         <h1>Drawing tools</h1>
         <p>
-            With the aid of the viewer's graphic object, you can have users  
+            With the aid of the viewer's graphic object, you can have users
 			drawing graphic features directly on the viewer.
         </p>
 		<p>
-			In this example four custom tools are created and added to the viewer's toolbar. 
+			In this example four custom tools are created and added to the viewer's toolbar.
 			The tools are used to draw points, lines, polygons and to clear the graphic layer.
 		</p>
 		<p>
-			Additionally, after the feature has been drawn, its 
-			<a href="http://www.opengeospatial.org/standards/sfa" target="_blank">OGC Simple Feature WKT</a> 
+			Additionally, after the feature has been drawn, its
+			<a href="http://www.opengeospatial.org/standards/sfa" target="_blank">OGC Simple Feature WKT</a>
 			(well-known text) is displayed in the box below the map.
 		</p>
-                
+
         <div id ="toolbar"></div>
         <div id="mapViewer"></div>
         <div id="geom"></div>
-        
+
         <p>
-            The code:           
+            The code:
         </p>
 <pre>// point tool
 new giscloud.ui.Toolbar.Tool("pointTool", {
         instant: true,
-        styles: {                    
+        styles: {
             caption: "Point",
             showCaption: true,
             cssClass: "mytool",
             active: "mytool-active",
-            hover: "mytool-hover"                    
+            hover: "mytool-hover"
         },
-        actions: {                    
+        actions: {
             activation: function (viewer) {
-                
+
                 // start drawing
                 viewer.graphic.draw("point",
                     function (feat) {
-                        
+
                         // output wkt
                         outputOgcWkt(feat.geometry().toOGC());
-                        
+
                     }
                 );
-                
-            }                 
+
+            }
         }
     }
 )
@@ -224,12 +224,12 @@ new giscloud.ui.Toolbar.Tool("pointTool", {
 // polygon tool
 ...
     viewer.graphic.draw("polygon", ...
-	
+
 
 // clear tool
 ...
     viewer.graphic.clear();
 ...</pre>
-        
+
     </body>
 </html>

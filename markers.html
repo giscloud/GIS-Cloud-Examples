@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
-    
+
     <title>flag markers example</title>
-    
+
     <link rel="stylesheet" type="text/css" href="examples.css"/>
-    <script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-    
+
     <script type="text/javascript">
         var viewer, features, markers, $ = giscloud.exposeJQuery(), available = {};
-		
+
         giscloud.ready(function() {
 			// start loading features
             var featuresLoading = giscloud.features.byLayer(layerId)
@@ -17,20 +17,20 @@
 					// save loaded features
 					features = arguments[0];
 				});
-			
+
 			// create a viewer
             viewer = new giscloud.Viewer("mapViewer", mapId, { slider: true });
-			
-			// after both the viewer and the features have been loaded, 
+
+			// after both the viewer and the features have been loaded,
 			// create the flag markers and the index
             $.when(viewer.loading, featuresLoading)
                 .done(createMarkers)
 				.done(createIndex);
-			
+
         });
-		
+
 		function createIndex () {
-			var i, k, e, l, 
+			var i, k, e, l,
 			    ind = $("#index"),
 				abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 			    showMarkers = function (letter) {
@@ -42,33 +42,33 @@
 						}
 					}
 				};
-			
+
 			for (i = 0, k = abc.length; i < k; i++) {
 				l = abc.charAt(i);
 				$("<a/>", {
 					id: l,
-					href: "#",					
+					href: "#",
 					click: function(evt) {
 						showMarkers(this.id);
 						evt.preventDefault();
-					}, 
+					},
 					css: {
 						"font-weight": available[l] ? "bold" : "normal"
 					}
 				}).html(l).appendTo(ind);
 			}
 		}
-		
+
 		function createMarkers() {
 			var m, i, k, f, title, cont;
-			
+
 			// create an object to hold the markers
 			markers = {};
-			
+
 			// create a marker for each feature and add it to the viewer
 			for (var i = 0, k = features.length; i < k; i++) {
 				f = features[i];
-				
+
 				// title
 				if (f.data.name3 !== "N.A.") {
 					title = f.data.name3;
@@ -77,19 +77,19 @@
                 } else {
 					title = f.data.name1;
 				}
-				
+
 				available[title.charAt(0)] = true;
-				
+
 				// content
 				cont = "Population density: " + f.data.pop_density;
-				
+
 				// create a hidden marker with a random color
 				m = new giscloud.FlagMarker(f.bounds.center(), title, cont, giscloud.Color.randomHue(70, 50));
 				m.visible(false);
-				
+
 				// add a marker to the viewer
 				viewer.addMarker(m);
-				
+
 				// add to markers
 				if (markers[title]) {
 					markers[title + "_" + Math.round(Math.random() * 100)] = m;
@@ -98,9 +98,9 @@
 				}
 			}
 		}
-        
+
     </script>
-    
+
 	<style type="text/css">
 		#index {
 			background-color: #fafafa;
@@ -112,13 +112,13 @@
 			margin-left: 0.8em;
 			margin-bottom: 0.2em;
 		}
-		
+
 		#index a:hover {
 			color: red;
-		} 
-		
+		}
+
 	</style>
-	
+
     <body>
         <h1>Flag Markers</h1>
         <p>
@@ -126,27 +126,27 @@
 			Features data is loaded and a flag marker is created for each feature.
         </p>
         <p>
-        	Markers are positioned at the center of the feature's bounds. The title and the content of the markers are 
-			filled with some feature data. All the markers are initially hidden, and you can display them by clicking 
+        	Markers are positioned at the center of the feature's bounds. The title and the content of the markers are
+			filled with some feature data. All the markers are initially hidden, and you can display them by clicking
 			through the index above the map viewer.
         </p>
 		<p>
 			Methods of <a target="_blank" href="http://api.jquery.com/deferred.promise/" title="deferred.promise()" >
 		    jQuery promise</a> objects are used for synchronisation.
 		</p>
-		
+
         <div id ="index"></div>
         <div id="mapViewer"></div>
-        
+
         <p>
-            The code:           
+            The code:
         </p>
-        <pre>  	
+        <pre>
 // create a hidden marker with a random color
 m = new giscloud.FlagMarker(
-    f.bounds.center(), 
-	title, 
-	content, 
+    f.bounds.center(),
+	title,
+	content,
 	giscloud.Color.randomHue(70, 50)
 ).visible(false);
 
@@ -155,7 +155,7 @@ m = new giscloud.FlagMarker(
 m.visible(true);
 
 
-// 
+//
 // synchronization
 //
 
@@ -169,12 +169,12 @@ var featuresLoading = giscloud.features.byLayer(4)
 // create a viewer
 viewer = new giscloud.Viewer("mapViewer", 1);
 
-// after both the viewer and the features have been loaded, 
+// after both the viewer and the features have been loaded,
 // create the markers and the index
 $.when(viewer.loading, featuresLoading)
     .done(createMarkers)
-    .done(createIndex);			
+    .done(createIndex);
         </pre>
-        
+
     </body>
 </html>

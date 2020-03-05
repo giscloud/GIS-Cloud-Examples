@@ -1,82 +1,82 @@
 <!DOCTYPE html>
 <html>
-	
+
 	<title>getting map and layer data</title>
-	
+
 	<link rel="stylesheet" type="text/css" href="examples.css"/>
-	<script type="text/javascript" src="http://api.giscloud.com/1/api.js"></script>    
+	<script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
     <script type="text/javascript" src="examples.js"></script>
-	
+
 	<script type="text/javascript">
 		// expose jQuery
         $ = giscloud.exposeJQuery();
-		
+
 		var maps, layers;
-		
+
 		/*
 		 * getMapsData()
-		 * 
+		 *
 		 * Retrieves a list of maps from GIS Cloud.
-		 * 
+		 *
 		 */
 		function getMapsData() {
-			
+
 			// get public maps
 			giscloud.maps.list({ perPage: 20, sort: "visited:desc" })
 			.done(function(mapdata) {
                 var i, k, map;
-                
+
                 // mapdata contains an array of giscloud.Map objects
                 for (i = 0, k = mapdata.length; i < k; i++) {
-                    
+
                     map = mapdata[i];
-                    
+
                     // show map data on the page
                     showMapData(map.id, map.name);
-                    
+
                 }
             });
 		}
-		
-		
+
+
 		/*
 		 * getLayersData(mapId)
-		 * 
+		 *
 		 * Retrieves layers data from a map with id mapId.
-		 * 
+		 *
 		 */
 		function getLayersData(mapId) {
-			
+
 			// get layers data
 			giscloud.layers.byMapId(mapId).done(function(layerdata) {
 				var i, k, layer;
-				
+
 				// layerdata contains an array of giscloud.Layer objects
 				for (i = 0, k = layerdata.length; i < k; i++) {
-                    
+
                     layer = layerdata[i];
-                    
+
                     // show map data on the page
                     showLayerData(mapId, layer.id, layer.name, layer.type);
-                    
+
                 }
-				
-			});			
+
+			});
 		}
-		
-		
+
+
 		/*
 		 * showMapData(mapId, name)
-		 * 
+		 *
 		 * Adds an unordered list item with map id and name
-		 * 
+		 *
 		 */
 		function showMapData(mapId, name) {
-			
+
 			var li = $("<li/>", { id: "map_" + mapId });
-			
+
 			li.append(name + " (id: " + mapId + ")<br/>");
-			
+
 			li.append($("<a/>", {
 				href: "#",
 				click: function(evt) {
@@ -84,94 +84,94 @@
 					evt.preventDefault();
 				}
 			}).append("Get layers"));
-			
+
 			li.append("<ul/>");
-			
+
 			li.appendTo("#list");
 		}
-		
-		
+
+
 		/*
          * showLayerData(mapId, layerId, name, type)
-         * 
+         *
          * Adds a list item with layer id, name and type
-         * 
+         *
          */
         function showLayerData(mapId, layerId, name, type) {
 			// remove link
             $("#map_" + mapId + " a").remove();
-			
+
 			// add list item
-			var li = $("<li/>");            
-            li.append(name + " (id: " + mapId + ", type: " + type + ")<br/>");            
-            li.appendTo("#map_" + mapId + " ul");	
+			var li = $("<li/>");
+            li.append(name + " (id: " + mapId + ", type: " + type + ")<br/>");
+            li.appendTo("#map_" + mapId + " ul");
         }
-		
+
 		giscloud.ready(function() {
-			
-			getMapsData();			
-			
+
+			getMapsData();
+
 		});
-		
+
 	</script>
-	
+
 	<body>
 		<h1>Getting map and layer data</h1>
 		<p>
 			This example shows how to retrieve public map data from GIS Cloud. You'll see 20 most visited maps in GIS Cloud.
 		</p>
-		
+
 		<p>
             Once loaded, maps are displayed in the list below. You can see their names and ids. <br/>
 			Clicking on the <i>Get layers</i> links will retrieve layer data for each map.
-		</p> 
-		
+		</p>
+
 		<ul id="list"></ul>
-		
+
 		<p>
-            The code:			
+            The code:
 		</p>
 		<pre>
 function getMapsData() {
-    
+
     // get public maps
     giscloud.maps.list({ perPage: 20, sort: "visited:desc" })
     .done(function(mapdata) {
         var i, k, map;
-        
+
         // mapdata contains an array of giscloud.Map objects
         for (i = 0, k = mapdata.length; i < k; i++) {
-            
+
             map = mapdata[i];
-            
+
             // show map data on the page
             showMapData(map.id, map.name);
-            
+
         }
     });
 }
 
 
 function getLayersData(mapId) {
-    
+
     // get layers data
     giscloud.layers.byMapId(mapId)
     .done(function(layerdata) {
         var i, k, layer;
-        
+
         // layerdata contains an array of giscloud.Layer objects
         for (i = 0, k = mapdata.length; i < k; i++) {
-            
+
             layer = layerdata[i];
-            
+
             // show map data on the page
             showLayersData(mapId, layer.id, layer.name);
-            
+
         }
-        
-    });         
+
+    });
 }
 		</pre>
-		
+
 	</body>
 </html>
