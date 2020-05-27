@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+    <title>feature filtering app example</title>
+
+    <link rel="stylesheet" type="text/css" href="examples.css"/>
+    <script type="text/javascript" src="https://api.giscloud.com/1/api.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+
+    <script type="text/javascript">
+        $ = giscloud.exposeJQuery();
+
+        var mapId = 1245864,
+            layerId = 3284350,
+            viewer;
+
+        giscloud.ready().done(function () {
+
+            // create a viewer
+            viewer = new giscloud.Viewer("mapViewer", mapId);
+
+            // setup filters checkboxes
+            $("form input").on("change", setFilter);
+
+        });
+
+        var filters = {
+            nameA: {
+                attributes: "name",
+                filter: function (obj) {
+                    return obj.name[0] === "A";
+                }
+            },
+            tropicals: {
+                attributes: "lat",
+                filter: function (obj) {
+                    return Math.abs(obj.lat) < 23;
+                }
+            },
+            highPopulation: {
+                attributes: "pop2005",
+                filter: function (obj) {
+                    return obj.pop2005 > 10000000;
+                }
+            }
+        };
+
+        function setFilter() {
+            var filter = filters[$("form input:checked").val()];
+            viewer.filterFeatures(layerId, filter);
+        }
+
+    </script>
+
+    <body>
+        <h1>Simple mapping app</h1>
+        <p>
+            This example shows the filterFeatures method of the Viewer.
+        </p>
+        <p>
+            Select a filter:
+            <form>
+                <ul>
+                    <li>
+                        <label for="nameA">
+                            <input name="filter" type="radio" value="nameA">
+                            Show only those countries with the first letter A
+                        </label>
+                    </li>
+                    <li>
+                        <label for="tropicals">
+                            <input name="filter" type="radio" value="tropicals">
+                            Show only tropical countries
+                        </label>
+                    </li>
+                    <li>
+                        <label for="highPopulation">
+                            <input name="filter" type="radio" value="highPopulation">
+                            Show only countries with population over 100m
+                        </label>
+                    </li>
+                </ul>
+            </form>
+        </p>
+
+        <div id ="toolbar"></div>
+        <div id="mapViewer"></div>
+
+        <p>
+            The code:
+        </p>
+        <pre>
+// these are the three filter definitions
+var filters = {
+    nameA: {
+        attributes: "name",
+        filter: function (obj) {
+            return obj.name[0] === "A";
+        }
+    },
+    tropicals: {
+        attributes: "lat",
+        filter: function (obj) {
+            return Math.abs(obj.lat) < 23;
+        }
+    },
+    highPopulation: {
+        attributes: "pop2005",
+        filter: function (obj) {
+            return obj.pop2005 > 10000000;
+        }
+    }
+};
+
+// one of these is chosen when a radio button is selected
+function setFilter() {
+    var filter = filters[$("form input:checked").val()];
+    viewer.filterFeatures(layerId, filter);
+}
+        </pre>
+
+    </body>
+</html>
